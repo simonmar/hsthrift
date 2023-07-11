@@ -1,6 +1,5 @@
 -- Copyright (c) Facebook, Inc. and its affiliates.
 
-{-# LANGUAGE CPP #-}
 module Thrift.ExactPrint.Convert
   ( computeOffsets
   , computeThriftFileOffsets
@@ -17,10 +16,6 @@ import Thrift.Compiler.Parser
 import Thrift.Compiler.Types
 
 import Thrift.ExactPrint.Types
-
-#if MIN_VERSION_dependent_sum(0,6,0)
-#define This Some
-#endif
 
 computeOffsets :: Program l Loc -> Program l Offset
 computeOffsets Program{..} = Program
