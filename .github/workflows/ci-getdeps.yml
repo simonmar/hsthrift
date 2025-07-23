@@ -10,11 +10,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ghc: [8.6.5, 8.8.4, 8.10.7, 9.2.8, 9.4.7, 9.6.6, 9.8.2]
-        buildtype: [getdeps]
+        # build types:
+        #   - getdeps:
+        #       - uses getdeps to build folly, fbthrift, etc.
+        #       - invokes cabal directly to build hsthrift packages
+        #   - cabal:
+        #       - uses cabal to build everything; no fbthrift; folly is
+        #         built via the folly-clib package.
+        #   - fullgetdeps:
+        #       - uses getdeps to build everything.
+        # ghc: [8.6.5, 8.8.4, 8.10.7, 9.2.8, 9.4.7, 9.6.6, 9.8.2]
+        # include:
+        #   - ghc: 9.4.7
+        #     buildtype: cabal
         include:
           - ghc: 9.4.7
-            buildtype: cabal
+            buildtype: fullgetdeps
     runs-on: ubuntu-latest
     container:
       image: ubuntu:24.04
@@ -66,7 +77,6 @@ jobs:
           libboost-all-dev
           libevent-dev
           libdouble-conversion-dev
-          libgoogle-glog-dev
           libgflags-dev
           libiberty-dev
           liblz4-dev
@@ -85,7 +95,18 @@ jobs:
           libgtest-dev
           libtinfo-dev
 
-      - name: Setup Haskell
+      - if: matrix.buildtype != 'fullgetdeps'
+        name: Install glog
+        run : >-
+          apt-get install -y libgoogle-glog-dev
+
+      - if: matrix.buildtype == 'fullgetdeps'
+        name: Install dependencies for getdeps build
+        run : >-
+          apt-get install -y wget libgmp-dev
+
+      - if: matrix.buildtype != 'fullgetdeps'
+        name: Setup Haskell
         run: |
           curl --proto '=https' --tlsv1.2 -sSf "https://downloads.haskell.org/~ghcup/x86_64-linux-ghcup" -o "$LOCAL_BIN"/ghcup
           chmod +x "$LOCAL_BIN"/ghcup
@@ -129,7 +150,8 @@ jobs:
         run: |
           apt-get install -y libfmt-dev
 
-      - name: Grab folly sources
+      - if: matrix.buildtype != 'fullgetdeps'
+        name: Grab folly sources
         run: |
           apt-get install -y libfast-float-dev wget
           make setup-folly
@@ -139,24 +161,29 @@ jobs:
         run: |
           ln -s cabal-github.project cabal.project
 
-      - name: Populate hackage index
+      - if: matrix.buildtype != 'fullgetdeps'
+        name: Populate hackage index
         run: cabal update
 
       - if: matrix.buildtype == 'getdeps'
         name: Generate C++ code from thrift files
         run: make thrift-cpp
 
-      - name: Build everything up to thrift-compiler
+      - if: matrix.buildtype != 'fullgetdeps'
+        name: Build everything up to thrift-compiler
         run: cabal $CABAL_CONFIG_FLAGS build exe:thrift-compiler
 
-      - name: Generate Haskell code from thrift files
+      - if: matrix.buildtype != 'fullgetdeps'
+        name: Generate Haskell code from thrift files
         run: make thrift-hs
 
-      - name: Generate source distributions for all packages
+      - if: matrix.buildtype != 'fullgetdeps'
+        name: Generate source distributions for all packages
         run: |
           cabal sdist $BUILD_PACKAGES
 
-      - name: Unpack source distributions in new directory
+      - if: matrix.buildtype != 'fullgetdeps'
+        name: Unpack source distributions in new directory
         run: |
           mkdir _sdists
           cd _sdists
@@ -166,10 +193,28 @@ jobs:
           cp ../ci-sdist.cabal.project cabal.project
           cd ..
 
-      - name: Build all packages
+      - if: matrix.buildtype != 'fullgetdeps'
+        name: Build all packages
         run: cabal $CABAL_CONFIG_FLAGS build $BUILD_PACKAGES
         working-directory: ./_sdists
 
-      - name: Run testsuites
+      - if: matrix.buildtype != 'fullgetdeps'
+        name: Run testsuites
         run: cabal $CABAL_CONFIG_FLAGS test $TEST_PACKAGES --keep-going
         working-directory: ./_sdists
+
+      - if: matrix.buildtype == 'fullgetdeps'
+        name: Build & test
+        run: |
+          CXXFLAGS=-march=haswell \
+            ./build/fbcode_builder/getdeps.py build hsthrift \
+              --allow-system-packages \
+              --src-dir=. \
+              --shared-libs \
+              --extra-cmake-defines='{"BOOST_LINK_STATIC": "OFF"}'
+          CXXFLAGS=-march=haswell \
+            ./build/fbcode_builder/getdeps.py test hsthrift \
+              --allow-system-packages \
+              --src-dir=. \
+              --shared-libs \
+              --extra-cmake-defines='{"BOOST_LINK_STATIC": "OFF"}'

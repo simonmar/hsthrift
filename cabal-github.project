@@ -15,5 +15,14 @@ packages:
 
 package fb-util
   flags: +folly
+package folly-clib
+  flags: -bundled-folly
 
 tests: true
+
+package thrift-lib
+  flags: +tests_use_ipv4
+package thrift-server
+  flags: +tests_use_ipv4
+package thrift-cpp-channel
+  flags: +tests_use_ipv4
