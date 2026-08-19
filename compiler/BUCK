@@ -1,0 +1,102 @@
+load("//buck2:common.bzl", "haskell_binary", "haskell_library")
+
+haskell_library(
+    name = "thrift-compiler-lib",
+    srcs = {
+        "Thrift/Compiler.hs": "Thrift/Compiler.hs",
+        "Thrift/Compiler/GenClient.hs": "Thrift/Compiler/GenClient.hs",
+        "Thrift/Compiler/GenConst.hs": "Thrift/Compiler/GenConst.hs",
+        "Thrift/Compiler/GenEnum.hs": "Thrift/Compiler/GenEnum.hs",
+        "Thrift/Compiler/GenFunction.hs": "Thrift/Compiler/GenFunction.hs",
+        "Thrift/Compiler/GenHaskell.hs": "Thrift/Compiler/GenHaskell.hs",
+        "Thrift/Compiler/GenJSON.hs": "Thrift/Compiler/GenJSON.hs",
+        "Thrift/Compiler/GenJSONLoc.hs": "Thrift/Compiler/GenJSONLoc.hs",
+        "Thrift/Compiler/GenService.hs": "Thrift/Compiler/GenService.hs",
+        "Thrift/Compiler/GenStruct.hs": "Thrift/Compiler/GenStruct.hs",
+        "Thrift/Compiler/GenTypedef.hs": "Thrift/Compiler/GenTypedef.hs",
+        "Thrift/Compiler/GenUnion.hs": "Thrift/Compiler/GenUnion.hs",
+        "Thrift/Compiler/GenUtils.hs": "Thrift/Compiler/GenUtils.hs",
+        "Thrift/Compiler/OptParse.hs": "Thrift/Compiler/OptParse.hs",
+        "Thrift/Compiler/Options.hs": "Thrift/Compiler/Options.hs",
+        "Thrift/Compiler/Lexer.hs": "Thrift/Compiler/Lexer.x",
+        "Thrift/Compiler/Parser.hs": "Thrift/Compiler/Parser.y",
+        "Thrift/Compiler/Plugin.hs": "Thrift/Compiler/Plugin.hs",
+        "Thrift/Compiler/Pretty.hs": "Thrift/Compiler/Pretty.hs",
+        "Thrift/Compiler/Typechecker.hs": "Thrift/Compiler/Typechecker.hs",
+        "Thrift/Compiler/Typechecker/Monad.hs": "Thrift/Compiler/Typechecker/Monad.hs",
+        "Thrift/Compiler/Types.hs": "Thrift/Compiler/Types.hs",
+        # plugins/ holds modules under the same Thrift.Compiler.Plugins.*
+        # namespace as everything else, just kept in a separate directory
+        # upstream (mirroring hs-source-dirs: . plugins in the .cabal file).
+        "Thrift/Compiler/Plugins/Haskell.hs": "plugins/Thrift/Compiler/Plugins/Haskell.hs",
+        "Thrift/Compiler/Plugins/Linter.hs": "plugins/Thrift/Compiler/Plugins/Linter.hs",
+    },
+    deps = [
+        "//hsthrift/common/util:fb-util",
+    ],
+    packages = [
+        "aeson",
+        "aeson-pretty",
+        "array",
+        "async",
+        "bytestring",
+        "containers",
+        "directory",
+        "either",
+        "extra",
+        "filepath",
+        "haskell-names",
+        "haskell-src-exts",
+        "mtl",
+        "optparse-applicative",
+        "pretty",
+        "some",
+        "text",
+        "text-show",
+        "transformers",
+        "unordered-containers",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+haskell_binary(
+    name = "thrift-compiler",
+    srcs = {"Main.hs": "main/Main.hs"},
+    deps = [":thrift-compiler-lib"],
+    packages = ["optparse-applicative"],
+    visibility = ["PUBLIC"],
+)
+
+haskell_binary(
+    name = "thrift-compiler-tests",
+    srcs = {
+        "TestFixtures.hs": "test/TestFixtures.hs",
+        # test/github/Util.hs is this package's own fixture-path helper
+        # (unrelated to hsthrift/common/github's TestRunner.hs); Cabal
+        # reaches it via hs-source-dirs: test, test/github.
+        "Util.hs": "test/github/Util.hs",
+    },
+    compiler_flags = [
+        "-threaded",
+        "-main-is",
+        "TestFixtures",
+    ],
+    deps = [
+        ":thrift-compiler-lib",
+        "//hsthrift/common/github:fb-stubs",
+    ],
+    packages = [
+        "aeson-pretty",
+        "directory",
+        "extra",
+        "filepath",
+        "haskell-src-exts",
+        "hspec",
+        "hspec-contrib",
+        "HUnit",
+        "process",
+        "temporary",
+        "text",
+    ],
+    visibility = ["PUBLIC"],
+)
