@@ -1,0 +1,18 @@
+haskell_library(
+    name = "mangle",
+    srcs = [
+        "Mangle.hs",
+        "Mangle/TH.hs",
+    ],
+    compiler_flags = [
+        "-XLambdaCase",
+        "-XGeneralizedNewtypeDeriving",
+    ],
+    deps = [
+        "//third-party/haskell:base",
+        "//third-party/haskell:containers",
+        "//third-party/haskell:parsec",
+        "//third-party/haskell:template-haskell",
+    ],
+    visibility = ["PUBLIC"],
+)
