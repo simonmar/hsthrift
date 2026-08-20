@@ -77,10 +77,10 @@ haskell_binary(
         "Util.hs": "test/github/Util.hs",
     },
     compiler_flags = [
-        "-threaded",
         "-main-is",
         "TestFixtures",
     ],
+    linker_flags = ["-threaded"],
     deps = [
         ":thrift-compiler-lib",
         "//hsthrift/common/github:fb-stubs",

@@ -1,5 +1,8 @@
+load("//buck2:common.bzl", "haskell_library")
+
 haskell_library(
     name = "mangle",
+    fb_haskell = False,
     srcs = [
         "Mangle.hs",
         "Mangle/TH.hs",
@@ -8,11 +11,10 @@ haskell_library(
         "-XLambdaCase",
         "-XGeneralizedNewtypeDeriving",
     ],
-    deps = [
-        "//third-party/haskell:base",
-        "//third-party/haskell:containers",
-        "//third-party/haskell:parsec",
-        "//third-party/haskell:template-haskell",
+    packages = [
+        "containers",
+        "parsec",
+        "template-haskell",
     ],
     visibility = ["PUBLIC"],
 )

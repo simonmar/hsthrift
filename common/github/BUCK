@@ -1,39 +1,13 @@
+load("//buck2:common.bzl", "haskell_library")
+
 haskell_library(
     name = "fb-stubs",
     srcs = [
         "Facebook/Init.hs",
         "TestRunner.hs",
     ],
-    compiler_flags = [
-        "-XBangPatterns",
-        "-XBinaryLiterals",
-        "-XDataKinds",
-        "-XDeriveDataTypeable",
-        "-XDeriveGeneric",
-        "-XEmptyCase",
-        "-XExistentialQuantification",
-        "-XFlexibleContexts",
-        "-XFlexibleInstances",
-        "-XGADTs",
-        "-XGeneralizedNewtypeDeriving",
-        "-XLambdaCase",
-        "-XMultiParamTypeClasses",
-        "-XMultiWayIf",
-        "-XNoMonomorphismRestriction",
-        "-XOverloadedStrings",
-        "-XPatternSynonyms",
-        "-XRankNTypes",
-        "-XRecordWildCards",
-        "-XScopedTypeVariables",
-        "-XStandaloneDeriving",
-        "-XTupleSections",
-        "-XTypeFamilies",
-        "-XTypeSynonymInstances",
-        "-XNondecreasingIndentation",
-    ],
-    deps = [
-        "//third-party/haskell:HUnit",
-        "//third-party/haskell:base",
+    packages = [
+        "HUnit",
     ],
     visibility = ["PUBLIC"],
 )
