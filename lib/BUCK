@@ -1,6 +1,34 @@
 load("//buck2:common.bzl", "haskell_binary", "haskell_library")
 load("//buck2:thrift.bzl", "thrift_haskell_library")
 
+# Reused by other packages' test-libs (thrift-http today) that generate the
+# same Math/Echoer/annotation types from these files, the same way the
+# Makefile's thrift-hs target re-runs thrift-compiler on them per package
+# (`-o ../http/test` etc.) instead of sharing a single generated copy.
+export_file(
+    name = "thrift.thrift",
+    src = "thrift/annotation/thrift.thrift",
+    visibility = ["PUBLIC"],
+)
+
+export_file(
+    name = "scope.thrift",
+    src = "thrift/annotation/scope.thrift",
+    visibility = ["PUBLIC"],
+)
+
+export_file(
+    name = "math.thrift",
+    src = "test/if/math.thrift",
+    visibility = ["PUBLIC"],
+)
+
+export_file(
+    name = "echoer.thrift",
+    src = "test/if/echoer.thrift",
+    visibility = ["PUBLIC"],
+)
+
 thrift_haskell_library(
     name = "thrift-lib",
     thrift_files = {

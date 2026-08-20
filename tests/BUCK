@@ -1,0 +1,19 @@
+# Only exports what thrift-lib's own test-lib needs (its test-suite
+# HsTest.Types is generated from if/hs_test.thrift, which lives here, not
+# under hsthrift/lib) - not a full migration of this package (see the
+# "Build and run thrift-tests" TODO in buck2.md for that).
+
+export_file(
+    name = "hs_test.thrift",
+    src = "if/hs_test.thrift",
+    visibility = ["PUBLIC"],
+)
+
+# hs_include'd verbatim into the generated Types.hs by thrift-compiler; not
+# referenced directly by any buck2 rule, but kept here as a visible/tracked
+# sibling of hs_test.thrift rather than an untracked filesystem dependency.
+export_file(
+    name = "hs_test_instances.hs",
+    src = "if/hs_test_instances.hs",
+    visibility = ["PUBLIC"],
+)

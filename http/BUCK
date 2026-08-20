@@ -1,0 +1,99 @@
+load("//buck2:common.bzl", "haskell_binary", "haskell_library")
+load("//buck2:thrift.bzl", "thrift_haskell_library")
+
+haskell_library(
+    name = "thrift-http",
+    srcs = [
+        "Thrift/Channel/HTTP.hs",
+        "Thrift/Server/HTTP.hs",
+    ],
+    deps = [
+        "//hsthrift/common/util:fb-util",
+        "//hsthrift/lib:thrift-lib",
+    ],
+    packages = [
+        "async",
+        "bytestring",
+        "containers",
+        "http-client",
+        "http-client-tls",
+        "http-types",
+        "network",
+        "streaming-commons",
+        "text",
+        "utf8-string",
+        "wai",
+        "warp",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+_TEST_DEPS = [
+    "//hsthrift/common/github:fb-stubs",
+    "//hsthrift/common/util:fb-util",
+    "//hsthrift/lib:test-helpers",
+    "//hsthrift/lib:thrift-lib",
+]
+
+_TEST_PACKAGES = [
+    "HUnit",
+    "STMonadTrans",
+    "aeson",
+    "bytestring",
+    "data-default",
+    "deepseq",
+    "ghc-prim",
+    "hashable",
+    "hspec",
+    "hspec-contrib",
+    "text",
+    "transformers",
+    "unordered-containers",
+]
+
+thrift_haskell_library(
+    name = "test-lib",
+    thrift_files = {
+        # See hsthrift/lib/BUCK for why these come from there rather than
+        # being generated locally - matches the Makefile re-running
+        # thrift-compiler on the same hsthrift/lib .thrift files per
+        # package (`-o ../http/test`) instead of sharing one generated copy.
+        "//hsthrift/lib:thrift.thrift": ["Facebook/Thrift/Annotation/Thrift/Thrift/Types.hs"],
+        "//hsthrift/lib:scope.thrift": ["Scope/Types.hs"],
+        "//hsthrift/lib:math.thrift": [
+            "Math/Types.hs",
+            "Math/Adder/Client.hs",
+            "Math/Adder/Service.hs",
+            "Math/Calculator/Client.hs",
+            "Math/Calculator/Service.hs",
+        ],
+        "//hsthrift/lib:echoer.thrift": [
+            "Echoer/Types.hs",
+            "Echoer/Echoer/Client.hs",
+            "Echoer/Echoer/Service.hs",
+        ],
+    },
+    thrift_flags = ["--hs", "-I", "hsthrift/lib"],
+    thrift_file_flags = {
+        "//hsthrift/lib:math.thrift": ["--hs", "--use-int", "-I", "hsthrift/lib"],
+        "//hsthrift/lib:echoer.thrift": ["--hs", "--use-int", "-I", "hsthrift/lib"],
+    },
+    srcs = {
+        "CalculatorHandler.hs": "test/common/CalculatorHandler.hs",
+        "EchoHandler.hs": "test/common/EchoHandler.hs",
+    },
+    deps = _TEST_DEPS,
+    packages = _TEST_PACKAGES + ["containers"],
+)
+
+haskell_binary(
+    name = "server",
+    srcs = {"ServerTest.hs": "test/ServerTest.hs"},
+    compiler_flags = ["-main-is", "ServerTest"],
+    linker_flags = ["-threaded"],
+    deps = _TEST_DEPS + [
+        ":test-lib",
+        ":thrift-http",
+    ],
+    packages = _TEST_PACKAGES + ["http-client", "http-types", "wai"],
+)
