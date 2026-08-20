@@ -75,8 +75,8 @@ thrift_haskell_library(
     },
     thrift_flags = ["--hs", "-I", "hsthrift/lib"],
     thrift_file_flags = {
-        "//hsthrift/lib:math.thrift": ["--hs", "--use-int", "-I", "hsthrift/lib"],
-        "//hsthrift/lib:echoer.thrift": ["--hs", "--use-int", "-I", "hsthrift/lib"],
+        "//hsthrift/lib:math.thrift": ["--use-int"],
+        "//hsthrift/lib:echoer.thrift": ["--use-int"],
     },
     srcs = {
         "CalculatorHandler.hs": "test/common/CalculatorHandler.hs",

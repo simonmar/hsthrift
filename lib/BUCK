@@ -155,8 +155,8 @@ thrift_haskell_library(
     },
     thrift_flags = ["--hs", "-I", "hsthrift/lib"],
     thrift_file_flags = {
-        "test/if/math.thrift": ["--hs", "--use-int", "-I", "hsthrift/lib"],
-        "//hsthrift/tests:hs_test.thrift": ["--hs", "-I", "hsthrift/tests"],
+        "test/if/math.thrift": ["--use-int"],
+        "//hsthrift/tests:hs_test.thrift": ["-I", "hsthrift/tests"],
     },
     srcs = {"TestCommon.hs": "test/lib/TestCommon.hs"},
     deps = _TEST_DEPS,
