@@ -5,7 +5,6 @@ cxx_library(
     srcs = ["IOBufTest.cpp"],
     compiler_flags = ["-std=c++20", "-march=haswell"],
     include_directories = [".."],
-    preferred_linkage = "static",
     deps = [
         "//hsthrift/common/util:fb-util-cxx",
         "//hsthrift/folly-clib:folly-clib",
@@ -18,7 +17,6 @@ cxx_library(
     srcs = ["DynamicHelper.cpp"],
     compiler_flags = ["-std=c++20", "-march=haswell"],
     include_directories = [".."],
-    preferred_linkage = "static",
     deps = [
         "//hsthrift/common/util:fb-util-cxx",
         "//hsthrift/folly-clib:folly-clib",
@@ -31,7 +29,6 @@ cxx_library(
     srcs = ["HsStructHelper.cpp"],
     compiler_flags = ["-std=c++20", "-march=haswell"],
     include_directories = [".."],
-    preferred_linkage = "static",
     deps = [
         "//hsthrift/common/util:fb-util-cxx",
         "//hsthrift/folly-clib:folly-clib",
