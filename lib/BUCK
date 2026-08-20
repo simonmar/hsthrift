@@ -1,4 +1,4 @@
-load("//buck2:common.bzl", "haskell_binary", "haskell_library")
+load("//buck2:haskell.bzl", "haskell_binary", "haskell_library")
 load("//buck2:thrift.bzl", "thrift_haskell_library")
 
 # Reused by other packages' test-libs (thrift-http today) that generate the
@@ -153,9 +153,9 @@ thrift_haskell_library(
         ],
         "//hsthrift/tests:hs_test.thrift": ["HsTest/Types.hs"],
     },
-    thrift_flags = ["--hs", "-I", "hsthrift/lib"],
+    thrift_flags = ["-I", "hsthrift/lib"],
     thrift_file_flags = {
-        "test/if/math.thrift": ["--use-int"],
+        "test/if/math.thrift": ["--use-int", "-I", "hsthrift/lib"],
         "//hsthrift/tests:hs_test.thrift": ["-I", "hsthrift/tests"],
     },
     srcs = {"TestCommon.hs": "test/lib/TestCommon.hs"},

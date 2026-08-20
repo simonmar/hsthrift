@@ -1,4 +1,4 @@
-load("//buck2:common.bzl", "haskell_binary", "haskell_library")
+load("//buck2:haskell.bzl", "haskell_binary", "haskell_library")
 load("//buck2:thrift.bzl", "thrift_haskell_library")
 
 haskell_library(
@@ -73,10 +73,10 @@ thrift_haskell_library(
             "Echoer/Echoer/Service.hs",
         ],
     },
-    thrift_flags = ["--hs", "-I", "hsthrift/lib"],
+    thrift_flags = ["-I", "hsthrift/lib"],
     thrift_file_flags = {
-        "//hsthrift/lib:math.thrift": ["--use-int"],
-        "//hsthrift/lib:echoer.thrift": ["--use-int"],
+        "//hsthrift/lib:math.thrift": ["--use-int", "-I", "hsthrift/lib"],
+        "//hsthrift/lib:echoer.thrift": ["--use-int", "-I", "hsthrift/lib"],
     },
     srcs = {
         "CalculatorHandler.hs": "test/common/CalculatorHandler.hs",
