@@ -51,10 +51,7 @@ haskell_binary(
     srcs = [
         "StreamTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "StreamTest",
-    ],
+    main = "StreamTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -97,10 +94,7 @@ haskell_binary(
     srcs = [
         "MovingAverageRateLimiterTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "MovingAverageRateLimiterTest",
-    ],
+    main = "MovingAverageRateLimiterTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -143,10 +137,7 @@ haskell_binary(
     srcs = [
         "RateLimiterMapTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "RateLimiterMapTest",
-    ],
+    main = "RateLimiterMapTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -189,10 +180,7 @@ haskell_binary(
     srcs = [
         "AllocLimitTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "AllocLimitTest",
-    ],
+    main = "AllocLimitTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -235,10 +223,7 @@ haskell_binary(
     srcs = [
         "UnitTests.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "UnitTests",
-    ],
+    main = "UnitTests",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -281,10 +266,7 @@ haskell_binary(
     srcs = [
         "RWVarTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "RWVarTest",
-    ],
+    main = "RWVarTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -327,10 +309,7 @@ haskell_binary(
     srcs = [
         "THTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "THTest",
-    ],
+    main = "THTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -373,10 +352,7 @@ haskell_binary(
     srcs = [
         "FilePathTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "FilePathTest",
-    ],
+    main = "FilePathTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -419,10 +395,7 @@ haskell_binary(
     srcs = [
         "OptParseTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "OptParseTest",
-    ],
+    main = "OptParseTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -465,10 +438,7 @@ haskell_binary(
     srcs = [
         "LensTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "LensTest",
-    ],
+    main = "LensTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -511,10 +481,7 @@ haskell_binary(
     srcs = [
         "ToExpTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "ToExpTest",
-    ],
+    main = "ToExpTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -557,10 +524,7 @@ haskell_binary(
     srcs = [
         "AesonTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "AesonTest",
-    ],
+    main = "AesonTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -603,10 +567,7 @@ haskell_binary(
     srcs = [
         "BufferTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "BufferTest",
-    ],
+    main = "BufferTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -649,10 +610,7 @@ haskell_binary(
     srcs = [
         "ExceptionTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "ExceptionTest",
-    ],
+    main = "ExceptionTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -695,10 +653,7 @@ haskell_binary(
     srcs = [
         "ControlExceptionTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "ControlExceptionTest",
-    ],
+    main = "ControlExceptionTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -741,10 +696,7 @@ haskell_binary(
     srcs = [
         "JSONPrettyTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "JSONPrettyTest",
-    ],
+    main = "JSONPrettyTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -787,10 +739,7 @@ haskell_binary(
     srcs = [
         "IOTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "IOTest",
-    ],
+    main = "IOTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -833,10 +782,7 @@ haskell_binary(
     srcs = [
         "TimeSecTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "TimeSecTest",
-    ],
+    main = "TimeSecTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -879,10 +825,7 @@ haskell_binary(
     srcs = [
         "ListTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "ListTest",
-    ],
+    main = "ListTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -925,10 +868,7 @@ haskell_binary(
     srcs = [
         "GraphTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "GraphTest",
-    ],
+    main = "GraphTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -971,10 +911,7 @@ haskell_binary(
     srcs = [
         "ConcurrentTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "ConcurrentTest",
-    ],
+    main = "ConcurrentTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -1017,10 +954,7 @@ haskell_binary(
     srcs = [
         "MD5Test.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "MD5Test",
-    ],
+    main = "MD5Test",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -1063,10 +997,7 @@ haskell_binary(
     srcs = [
         "Control/MonadTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "Control.MonadTest",
-    ],
+    main = "Control.MonadTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -1109,10 +1040,7 @@ haskell_binary(
     srcs = [
         "StringQuasiTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "StringQuasiTest",
-    ],
+    main = "StringQuasiTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -1155,10 +1083,7 @@ haskell_binary(
     srcs = [
         "IOBufTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "IOBufTest",
-    ],
+    main = "IOBufTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -1178,10 +1103,7 @@ haskell_binary(
     srcs = [
         "DynamicTest.hs",
     ],
-    compiler_flags = [
-        "-main-is",
-        "DynamicTest",
-    ],
+    main = "DynamicTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",
@@ -1204,10 +1126,7 @@ haskell_binary(
         "HsStructTest.hs",
         "HsStructTestTypes.hsc",
     ],
-    compiler_flags = [
-        "-main-is",
-        "HsStructTest",
-    ],
+    main = "HsStructTest",
     linker_flags = ["-threaded"],
     packages = [
         "HUnit",

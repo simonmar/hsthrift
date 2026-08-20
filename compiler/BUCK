@@ -76,10 +76,7 @@ haskell_binary(
         # reaches it via hs-source-dirs: test, test/github.
         "Util.hs": "test/github/Util.hs",
     },
-    compiler_flags = [
-        "-main-is",
-        "TestFixtures",
-    ],
+    main = "TestFixtures",
     linker_flags = ["-threaded"],
     deps = [
         ":thrift-compiler-lib",

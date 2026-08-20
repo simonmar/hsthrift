@@ -168,7 +168,7 @@ _TEST_COMMON_DEPS = _TEST_DEPS + [":test-lib"]
 haskell_binary(
     name = "channel",
     srcs = {"ChannelTest.hs": "test/ChannelTest.hs"},
-    compiler_flags = ["-main-is", "ChannelTest"],
+    main = "ChannelTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
 )
@@ -176,7 +176,7 @@ haskell_binary(
 haskell_binary(
     name = "socket-channel",
     srcs = {"SocketChannelTest.hs": "test/SocketChannelTest.hs"},
-    compiler_flags = ["-main-is", "SocketChannelTest"],
+    main = "SocketChannelTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
 )
@@ -184,7 +184,7 @@ haskell_binary(
 haskell_binary(
     name = "client",
     srcs = {"ClientTest.hs": "test/ClientTest.hs"},
-    compiler_flags = ["-main-is", "ClientTest"],
+    main = "ClientTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
 )
@@ -192,7 +192,7 @@ haskell_binary(
 haskell_binary(
     name = "binary-parser",
     srcs = {"BinaryParserTest.hs": "test/BinaryParserTest.hs"},
-    compiler_flags = ["-main-is", "BinaryParserTest"],
+    main = "BinaryParserTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
 )
@@ -200,7 +200,7 @@ haskell_binary(
 haskell_binary(
     name = "json-parsing",
     srcs = {"JSONStringTest.hs": "test/JSONStringTest.hs"},
-    compiler_flags = ["-main-is", "JSONStringTest"],
+    main = "JSONStringTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
 )
@@ -208,7 +208,7 @@ haskell_binary(
 haskell_binary(
     name = "json-num",
     srcs = {"JSONNumTest.hs": "test/JSONNumTest.hs"},
-    compiler_flags = ["-main-is", "JSONNumTest"],
+    main = "JSONNumTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
 )
@@ -216,7 +216,7 @@ haskell_binary(
 haskell_binary(
     name = "json-null",
     srcs = {"JSONNullTest.hs": "test/JSONNullTest.hs"},
-    compiler_flags = ["-main-is", "JSONNullTest"],
+    main = "JSONNullTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
 )

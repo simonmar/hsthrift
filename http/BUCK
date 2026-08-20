@@ -89,7 +89,7 @@ thrift_haskell_library(
 haskell_binary(
     name = "server",
     srcs = {"ServerTest.hs": "test/ServerTest.hs"},
-    compiler_flags = ["-main-is", "ServerTest"],
+    main = "ServerTest",
     linker_flags = ["-threaded"],
     deps = _TEST_DEPS + [
         ":test-lib",
