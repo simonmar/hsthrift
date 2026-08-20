@@ -1,3 +1,4 @@
+load("//buck2:common.bzl", "haskell_binary", "haskell_library")
 load("//buck2:thrift.bzl", "thrift_haskell_library")
 
 thrift_haskell_library(
@@ -61,4 +62,133 @@ thrift_haskell_library(
         "word8",
     ],
     visibility = ["PUBLIC"],
+)
+
+haskell_library(
+    name = "test-helpers",
+    srcs = {
+        "Network.hs": "test/helpers/Network.hs",
+        "TestChannel.hs": "test/helpers/TestChannel.hs",
+    },
+    deps = [":thrift-lib"],
+    packages = ["bytestring", "network"],
+    visibility = ["PUBLIC"],
+)
+
+# Shared by test-lib and the test-suites below it (matches the `test-deps`
+# common stanza in thrift-lib.cabal).
+_TEST_DEPS = [
+    ":test-helpers",
+    ":thrift-lib",
+    "//hsthrift/common/github:fb-stubs",
+    "//hsthrift/common/util:fb-util",
+]
+
+_TEST_PACKAGES = [
+    "HUnit",
+    "QuickCheck",
+    "STMonadTrans",
+    "aeson",
+    "async",
+    "bytestring",
+    "containers",
+    "data-default",
+    "deepseq",
+    "filepath",
+    "ghc-prim",
+    "hashable",
+    "hspec",
+    "hspec-contrib",
+    "network",
+    "text",
+    "transformers",
+    "unordered-containers",
+    "vector",
+]
+
+thrift_haskell_library(
+    name = "test-lib",
+    thrift_files = {
+        # thrift/annotation/*.thrift, and math.thrift's include of it, only
+        # resolve with -I pointed at hsthrift/lib (matching the Makefile's
+        # `cd lib && thrift-compiler ...`); hs_test.thrift needs its own
+        # copy of thrift/annotation under hsthrift/tests instead.
+        "thrift/annotation/thrift.thrift": ["Facebook/Thrift/Annotation/Thrift/Thrift/Types.hs"],
+        "thrift/annotation/scope.thrift": ["Scope/Types.hs"],
+        "thrift/annotation/haskell.thrift": ["Facebook/Thrift/Annotation/Haskell/Haskell/Types.hs"],
+        "test/if/math.thrift": [
+            "Math/Types.hs",
+            "Math/Adder/Client.hs",
+            "Math/Adder/Service.hs",
+            "Math/Calculator/Client.hs",
+            "Math/Calculator/Service.hs",
+        ],
+        "//hsthrift/tests:hs_test.thrift": ["HsTest/Types.hs"],
+    },
+    thrift_flags = ["--hs", "-I", "hsthrift/lib"],
+    thrift_file_flags = {
+        "test/if/math.thrift": ["--hs", "--use-int", "-I", "hsthrift/lib"],
+        "//hsthrift/tests:hs_test.thrift": ["--hs", "-I", "hsthrift/tests"],
+    },
+    srcs = {"TestCommon.hs": "test/lib/TestCommon.hs"},
+    deps = _TEST_DEPS,
+    packages = _TEST_PACKAGES,
+)
+
+_TEST_COMMON_DEPS = _TEST_DEPS + [":test-lib"]
+
+haskell_binary(
+    name = "channel",
+    srcs = {"ChannelTest.hs": "test/ChannelTest.hs"},
+    compiler_flags = ["-main-is", "ChannelTest"],
+    deps = _TEST_COMMON_DEPS,
+    packages = _TEST_PACKAGES,
+)
+
+haskell_binary(
+    name = "socket-channel",
+    srcs = {"SocketChannelTest.hs": "test/SocketChannelTest.hs"},
+    compiler_flags = ["-main-is", "SocketChannelTest"],
+    deps = _TEST_COMMON_DEPS,
+    packages = _TEST_PACKAGES,
+)
+
+haskell_binary(
+    name = "client",
+    srcs = {"ClientTest.hs": "test/ClientTest.hs"},
+    compiler_flags = ["-main-is", "ClientTest"],
+    deps = _TEST_COMMON_DEPS,
+    packages = _TEST_PACKAGES,
+)
+
+haskell_binary(
+    name = "binary-parser",
+    srcs = {"BinaryParserTest.hs": "test/BinaryParserTest.hs"},
+    compiler_flags = ["-main-is", "BinaryParserTest"],
+    deps = _TEST_COMMON_DEPS,
+    packages = _TEST_PACKAGES,
+)
+
+haskell_binary(
+    name = "json-parsing",
+    srcs = {"JSONStringTest.hs": "test/JSONStringTest.hs"},
+    compiler_flags = ["-main-is", "JSONStringTest"],
+    deps = _TEST_COMMON_DEPS,
+    packages = _TEST_PACKAGES,
+)
+
+haskell_binary(
+    name = "json-num",
+    srcs = {"JSONNumTest.hs": "test/JSONNumTest.hs"},
+    compiler_flags = ["-main-is", "JSONNumTest"],
+    deps = _TEST_COMMON_DEPS,
+    packages = _TEST_PACKAGES,
+)
+
+haskell_binary(
+    name = "json-null",
+    srcs = {"JSONNullTest.hs": "test/JSONNullTest.hs"},
+    compiler_flags = ["-main-is", "JSONNullTest"],
+    deps = _TEST_COMMON_DEPS,
+    packages = _TEST_PACKAGES,
 )
