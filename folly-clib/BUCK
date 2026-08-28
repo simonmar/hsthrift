@@ -1,3 +1,5 @@
+load("//buck2:cxx.bzl", "cxx_library")
+
 cxx_library(
     name = "folly-clib",
     srcs = [
