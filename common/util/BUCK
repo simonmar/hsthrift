@@ -15,7 +15,10 @@ cxx_library(
     compiler_flags = ["-std=c++20", "-march=haswell"],
     include_directories = ["."],
     public_include_directories = ["."],
-    exported_linker_flags = ["-lglog"],
+    # -lgflags: libglog.so's own DT_NEEDED dependency (glog uses gflags for
+    # its own flag registration) - a dynamic link resolves this for free,
+    # a static one doesn't.
+    exported_linker_flags = ["-lglog", "-lgflags"],
     deps = ["//hsthrift/folly-clib:folly-clib"],
     visibility = ["PUBLIC"],
 )

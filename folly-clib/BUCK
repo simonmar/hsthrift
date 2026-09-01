@@ -385,6 +385,9 @@ cxx_library(
         "-lboost_context",
         "-lfmt",
         "-lglog",
+        # glog's own DT_NEEDED dependency (see hsthrift/common/util/BUCK's
+        # fb-util-cxx comment) - a static link needs it spelled out too.
+        "-lgflags",
         "-lssl",
         "-lcrypto",
         "-lsnappy",
