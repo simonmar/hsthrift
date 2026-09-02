@@ -1,5 +1,5 @@
-load("//buck2:thrift.bzl", "thrift_haskell_test")
-
+load("//buck2:haskell.bzl", "haskell_test")
+load("//buck2:thrift.bzl", "thrift_library")
 # Exported for thrift-lib's own test-lib (its test-suite HsTest.Types is
 # generated from if/hs_test.thrift, which lives here, not under
 # hsthrift/lib) - see hsthrift/lib/BUCK.
@@ -55,81 +55,95 @@ _ANNOTATIONS = {
     "thrift/annotation/scope.thrift": ["Scope/Types.hs"],
 }
 
-thrift_haskell_test(
+haskell_test(
     name = "add-prefix",
-    thrift_files = dict(_ANNOTATIONS, **{
+    srcs = thrift_library(
+        name = "add-prefix",
+        thrift_files = dict(_ANNOTATIONS, **{
             "if/hs_prefix.thrift": [
                 "HsPrefix/Types.hs",
             ],
         }),
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"AddPrefixTest.hs": "AddPrefixTest.hs"},
+        srcs = {"AddPrefixTest.hs": "AddPrefixTest.hs"},
+    ),
     main = "AddPrefixTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "binary-protocol",
-    thrift_files = dict(_ANNOTATIONS, **{
+    srcs = thrift_library(
+        name = "binary-protocol",
+        thrift_files = dict(_ANNOTATIONS, **{
             "if/foo.thrift": [
                 "Foo/Types.hs",
             ],
         }),
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"BinaryProtocolTest.hs": "BinaryProtocolTest.hs"},
+        srcs = {"BinaryProtocolTest.hs": "BinaryProtocolTest.hs"},
+    ),
     main = "BinaryProtocolTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "const-gen",
-    thrift_files = dict(_ANNOTATIONS, **{
+    srcs = thrift_library(
+        name = "const-gen",
+        thrift_files = dict(_ANNOTATIONS, **{
             "if/constants.thrift": [
                 "Constants/Types.hs",
             ],
         }),
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"ConstGenTest.hs": "ConstGenTest.hs"},
+        srcs = {"ConstGenTest.hs": "ConstGenTest.hs"},
+    ),
     main = "ConstGenTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "const-parser",
-    thrift_files = dict(_ANNOTATIONS, **{
+    srcs = thrift_library(
+        name = "const-parser",
+        thrift_files = dict(_ANNOTATIONS, **{
             "if/constants.thrift": [
                 "Constants/Types.hs",
             ],
         }),
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"ConstParserTest.hs": "ConstParserTest.hs"},
+        srcs = {"ConstParserTest.hs": "ConstParserTest.hs"},
+    ),
     main = "ConstParserTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "const",
-    thrift_files = dict(_ANNOTATIONS, **{
+    srcs = thrift_library(
+        name = "const",
+        thrift_files = dict(_ANNOTATIONS, **{
             "if/constants.thrift": [
                 "Constants/Types.hs",
             ],
@@ -137,108 +151,123 @@ thrift_haskell_test(
                 "Foo/Types.hs",
             ],
         }),
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"ConstTest.hs": "ConstTest.hs"},
+        srcs = {"ConstTest.hs": "ConstTest.hs"},
+    ),
     main = "ConstTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "duplicate-names",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "duplicate-names",
+        thrift_files = {
         "if/duplicate.thrift": [
             "Duplicate/Types.hs",
         ],
     },
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    thrift_file_flags = {
+        thrift_file_flags = {
         "if/duplicate.thrift": [
             "--duplicate-names",
             "-I",
             "hsthrift/tests",
         ],
     },
-    srcs = {"DuplicateNamesTest.hs": "DuplicateNamesTest.hs"},
+        srcs = {"DuplicateNamesTest.hs": "DuplicateNamesTest.hs"},
+    ),
     main = "DuplicateNamesTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "enum-const",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "enum-const",
+        thrift_files = {
         "if/EnumConst.thrift": [
             "EnumConst/Types.hs",
         ],
     },
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"EnumConstTest.hs": "EnumConstTest.hs"},
+        srcs = {"EnumConstTest.hs": "EnumConstTest.hs"},
+    ),
     main = "EnumConstTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "enum",
-    thrift_files = dict(_ANNOTATIONS, **{
+    srcs = thrift_library(
+        name = "enum",
+        thrift_files = dict(_ANNOTATIONS, **{
             "if/enum.thrift": [
                 "Enum/Types.hs",
             ],
         }),
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"EnumTest.hs": "EnumTest.hs"},
+        srcs = {"EnumTest.hs": "EnumTest.hs"},
+    ),
     main = "EnumTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "exception",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "exception",
+        thrift_files = {
         "if/exception.thrift": [
             "Exception/Types.hs",
         ],
     },
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"ExceptionTest.hs": "ExceptionTest.hs"},
+        srcs = {"ExceptionTest.hs": "ExceptionTest.hs"},
+    ),
     main = "ExceptionTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "flags",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "flags",
+        thrift_files = {
         "if/flags.thrift": [
             "Flags/Types.hs",
         ],
     },
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    thrift_file_flags = {
+        thrift_file_flags = {
         "if/flags.thrift": [
             "--use-int",
             "--use-hash-map",
@@ -247,41 +276,47 @@ thrift_haskell_test(
             "hsthrift/tests",
         ],
     },
-    srcs = {"FlagsTest.hs": "FlagsTest.hs"},
+        srcs = {"FlagsTest.hs": "FlagsTest.hs"},
+    ),
     main = "FlagsTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "has-field",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "has-field",
+        thrift_files = {
         "if/hasfield.thrift": [
             "Hasfield/Types.hs",
         ],
     },
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    thrift_file_flags = {
+        thrift_file_flags = {
         "if/hasfield.thrift": [
             "--extra-hasfields",
             "-I",
             "hsthrift/tests",
         ],
     },
-    srcs = {"HasFieldTest.hs": "HasFieldTest.hs"},
+        srcs = {"HasFieldTest.hs": "HasFieldTest.hs"},
+    ),
     main = "HasFieldTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "includes",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "includes",
+        thrift_files = {
         "if/A.thrift": [
             "A/Types.hs",
         ],
@@ -298,65 +333,78 @@ thrift_haskell_test(
             "E/Types.hs",
         ],
     },
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"IncludesTest.hs": "IncludesTest.hs"},
+        srcs = {"IncludesTest.hs": "IncludesTest.hs"},
+    ),
     main = "IncludesTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "input-checking",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "input-checking",
+        thrift_files = {
         "if/versions.thrift": [
             "Versions/Types.hs",
         ],
     },
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"InputCheckingTest.hs": "InputCheckingTest.hs"},
+        srcs = {"InputCheckingTest.hs": "InputCheckingTest.hs"},
+    ),
     main = "InputCheckingTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "instances",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "instances",
+        thrift_files = {
         "if/monoid.thrift": [
             "Monoid/Types.hs",
         ],
     },
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"InstancesTest.hs": "InstancesTest.hs"},
+        srcs = {"InstancesTest.hs": "InstancesTest.hs"},
+    ),
     main = "InstancesTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "interaction",
-    srcs = {"InteractionsTest.hs": "InteractionsTest.hs"},
+    srcs = thrift_library(
+        name = "interaction",
+        srcs = {"InteractionsTest.hs": "InteractionsTest.hs"},
+    ),
     main = "InteractionsTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "interface",
-    srcs = {"InterfaceTest.hs": "InterfaceTest.hs"},
+    srcs = thrift_library(
+        name = "interface",
+        srcs = {"InterfaceTest.hs": "InterfaceTest.hs"},
+    ),
     main = "InterfaceTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
@@ -366,27 +414,33 @@ thrift_haskell_test(
     ],
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "json",
-    thrift_files = dict(_ANNOTATIONS, **{
+    srcs = thrift_library(
+        name = "json",
+        thrift_files = dict(_ANNOTATIONS, **{
             "if/foo.thrift": [
                 "Foo/Types.hs",
             ],
         }),
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"JSONTest.hs": "JSONTest.hs"},
+        srcs = {"JSONTest.hs": "JSONTest.hs"},
+    ),
     main = "JSONTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "lexer",
-    srcs = {"LexerTest.hs": "LexerTest.hs"},
+    srcs = thrift_library(
+        name = "lexer",
+        srcs = {"LexerTest.hs": "LexerTest.hs"},
+    ),
     main = "LexerTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
@@ -395,45 +449,53 @@ thrift_haskell_test(
     ],
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "map",
-    thrift_files = dict(_ANNOTATIONS, **{
+    srcs = thrift_library(
+        name = "map",
+        thrift_files = dict(_ANNOTATIONS, **{
             "if/map.thrift": [
                 "Map/Types.hs",
             ],
         }),
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"MapTest.hs": "MapTest.hs"},
+        srcs = {"MapTest.hs": "MapTest.hs"},
+    ),
     main = "MapTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "messed-up-case",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "messed-up-case",
+        thrift_files = {
         "if/messed_up_case.thrift": [
             "MessedUpCase/Types.hs",
         ],
     },
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"MessedUpCaseTest.hs": "MessedUpCaseTest.hs"},
+        srcs = {"MessedUpCaseTest.hs": "MessedUpCaseTest.hs"},
+    ),
     main = "MessedUpCaseTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "namespace",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "namespace",
+        thrift_files = {
         "if/namespace.thrift": [
             "Thrift/Test/Namespace/Types.hs",
         ],
@@ -441,66 +503,78 @@ thrift_haskell_test(
             "Thrift/Test/Internal/NamespaceIncluded/Types.hs",
         ],
     },
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"NamespaceTest.hs": "NamespaceTest.hs"},
+        srcs = {"NamespaceTest.hs": "NamespaceTest.hs"},
+    ),
     main = "NamespaceTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "parens",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "parens",
+        thrift_files = {
         "if/parens.thrift": [
             "Parens/Types.hs",
         ],
     },
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"ParensTest.hs": "ParensTest.hs"},
+        srcs = {"ParensTest.hs": "ParensTest.hs"},
+    ),
     main = "ParensTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "parser",
-    srcs = {"ParserTest.hs": "ParserTest.hs"},
+    srcs = thrift_library(
+        name = "parser",
+        srcs = {"ParserTest.hs": "ParserTest.hs"},
+    ),
     main = "ParserTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "recursive",
-    srcs = {"RecursiveTest.hs": "RecursiveTest.hs"},
+    srcs = thrift_library(
+        name = "recursive",
+        srcs = {"RecursiveTest.hs": "RecursiveTest.hs"},
+    ),
     main = "RecursiveTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "required-symbols",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "required-symbols",
+        thrift_files = {
         "if/huge.thrift": [
             "Huge/Types.hs",
             "Huge/Service/Client.hs",
         ],
     },
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    thrift_file_flags = {
+        thrift_file_flags = {
         "if/huge.thrift": [
             "--required-symbols",
             "A,B,C,X,weNeedThis",
@@ -508,52 +582,62 @@ thrift_haskell_test(
             "hsthrift/tests",
         ],
     },
-    srcs = {"RequiredSymbolsTest.hs": "RequiredSymbolsTest.hs"},
+        srcs = {"RequiredSymbolsTest.hs": "RequiredSymbolsTest.hs"},
+    ),
     main = "RequiredSymbolsTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "scoped-enums",
-    thrift_files = dict(_ANNOTATIONS, **{
+    srcs = thrift_library(
+        name = "scoped-enums",
+        thrift_files = dict(_ANNOTATIONS, **{
             "if/scoped_enums.thrift": [
                 "ScopedEnums/Types.hs",
             ],
         }),
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"ScopedEnumsTest.hs": "ScopedEnumsTest.hs"},
+        srcs = {"ScopedEnumsTest.hs": "ScopedEnumsTest.hs"},
+    ),
     main = "ScopedEnumsTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "service",
-    thrift_files = dict(_ANNOTATIONS, **{
+    srcs = thrift_library(
+        name = "service",
+        thrift_files = dict(_ANNOTATIONS, **{
             "if/service.thrift": [
                 "Service/Types.hs",
             ],
         }),
-    thrift_flags = [
+        thrift_flags = [
         "-I",
         "hsthrift/tests",
     ],
-    srcs = {"ServiceTest.hs": "ServiceTest.hs"},
+        srcs = {"ServiceTest.hs": "ServiceTest.hs"},
+    ),
     main = "ServiceTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "typechecker",
-    srcs = {"TypecheckerTest.hs": "TypecheckerTest.hs"},
+    srcs = thrift_library(
+        name = "typechecker",
+        srcs = {"TypecheckerTest.hs": "TypecheckerTest.hs"},
+    ),
     main = "TypecheckerTest",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,
@@ -562,9 +646,12 @@ thrift_haskell_test(
     ],
 )
 
-thrift_haskell_test(
+haskell_test(
     name = "typechecker-lenient",
-    srcs = {"TypecheckerTestLenient.hs": "TypecheckerTestLenient.hs"},
+    srcs = thrift_library(
+        name = "typechecker-lenient",
+        srcs = {"TypecheckerTestLenient.hs": "TypecheckerTestLenient.hs"},
+    ),
     main = "TypecheckerTestLenient",
     linker_flags = ["-threaded"],
     deps = _COMMON_DEPS,

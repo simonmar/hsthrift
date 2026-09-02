@@ -1,5 +1,5 @@
 load("//buck2:haskell.bzl", "haskell_library", "haskell_test")
-load("//buck2:thrift.bzl", "thrift_haskell_library")
+load("//buck2:thrift.bzl", "thrift_library")
 
 # Reused by other packages' test-libs (thrift-http today) that generate the
 # same Math/Echoer/annotation types from these files, the same way the
@@ -29,14 +29,16 @@ export_file(
     visibility = ["PUBLIC"],
 )
 
-thrift_haskell_library(
+haskell_library(
     name = "thrift-lib",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "thrift-lib",
+        thrift_files = {
         # namespace hs in each .thrift file determines the generated path.
         "if/RpcOptions.thrift": ["Thrift/Protocol/RpcOptions/Types.hs"],
         "if/ApplicationException.thrift": ["Thrift/Protocol/ApplicationException/Types.hs"],
     },
-    srcs = [
+        srcs = [
         "Thrift/Api.hs",
         "Thrift/Binary/Parser.hs",
         "Thrift/Channel.hs",
@@ -57,6 +59,7 @@ thrift_haskell_library(
         "Thrift/Protocol/JSON/String.hs",
         "Thrift/Util.hs",
     ],
+    ),
     linker_flags = ["-lstdc++"],
     deps = [
         "//hsthrift/common/github:fb-stubs",
@@ -134,9 +137,11 @@ _TEST_PACKAGES = [
     "vector",
 ]
 
-thrift_haskell_library(
+haskell_library(
     name = "test-lib",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "test-lib",
+        thrift_files = {
         # thrift/annotation/*.thrift, and math.thrift's include of it, only
         # resolve with -I pointed at hsthrift/lib (matching the Makefile's
         # `cd lib && thrift-compiler ...`); hs_test.thrift needs its own
@@ -153,12 +158,13 @@ thrift_haskell_library(
         ],
         "//hsthrift/tests:hs_test.thrift": ["HsTest/Types.hs"],
     },
-    thrift_flags = ["-I", "hsthrift/lib"],
-    thrift_file_flags = {
+        thrift_flags = ["-I", "hsthrift/lib"],
+        thrift_file_flags = {
         "test/if/math.thrift": ["--use-int", "-I", "hsthrift/lib"],
         "//hsthrift/tests:hs_test.thrift": ["-I", "hsthrift/tests"],
     },
-    srcs = {"TestCommon.hs": "test/lib/TestCommon.hs"},
+        srcs = {"TestCommon.hs": "test/lib/TestCommon.hs"},
+    ),
     deps = _TEST_DEPS,
     packages = _TEST_PACKAGES,
 )

@@ -1,5 +1,5 @@
 load("//buck2:haskell.bzl", "haskell_library", "haskell_test")
-load("//buck2:thrift.bzl", "thrift_haskell_library")
+load("//buck2:thrift.bzl", "thrift_library")
 
 haskell_library(
     name = "thrift-http",
@@ -51,9 +51,11 @@ _TEST_PACKAGES = [
     "unordered-containers",
 ]
 
-thrift_haskell_library(
+haskell_library(
     name = "test-lib",
-    thrift_files = {
+    srcs = thrift_library(
+        name = "test-lib",
+        thrift_files = {
         # See hsthrift/lib/BUCK for why these come from there rather than
         # being generated locally - matches the Makefile re-running
         # thrift-compiler on the same hsthrift/lib .thrift files per
@@ -73,15 +75,16 @@ thrift_haskell_library(
             "Echoer/Echoer/Service.hs",
         ],
     },
-    thrift_flags = ["-I", "hsthrift/lib"],
-    thrift_file_flags = {
+        thrift_flags = ["-I", "hsthrift/lib"],
+        thrift_file_flags = {
         "//hsthrift/lib:math.thrift": ["--use-int", "-I", "hsthrift/lib"],
         "//hsthrift/lib:echoer.thrift": ["--use-int", "-I", "hsthrift/lib"],
     },
-    srcs = {
+        srcs = {
         "CalculatorHandler.hs": "test/common/CalculatorHandler.hs",
         "EchoHandler.hs": "test/common/EchoHandler.hs",
     },
+    ),
     deps = _TEST_DEPS,
     packages = _TEST_PACKAGES + ["containers"],
 )
