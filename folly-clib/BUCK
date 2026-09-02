@@ -360,8 +360,6 @@ cxx_library(
         "folly/folly/Uri.cpp",
     ],
     compiler_flags = [
-        "-std=c++20",
-        "-march=haswell",
         "-fcoroutines",
     ],
     preprocessor_flags = [

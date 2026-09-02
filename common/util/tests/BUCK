@@ -4,7 +4,6 @@ load("//buck2:cxx.bzl", "cxx_library")
 cxx_library(
     name = "iobuf-test-cxx",
     srcs = ["IOBufTest.cpp"],
-    compiler_flags = ["-std=c++20", "-march=haswell"],
     include_directories = [".."],
     deps = [
         "//hsthrift/common/util:fb-util-cxx",
@@ -16,7 +15,6 @@ cxx_library(
 cxx_library(
     name = "dynamic-test-cxx",
     srcs = ["DynamicHelper.cpp"],
-    compiler_flags = ["-std=c++20", "-march=haswell"],
     include_directories = [".."],
     deps = [
         "//hsthrift/common/util:fb-util-cxx",
@@ -28,7 +26,6 @@ cxx_library(
 cxx_library(
     name = "hs-struct-test-cxx",
     srcs = ["HsStructHelper.cpp"],
-    compiler_flags = ["-std=c++20", "-march=haswell"],
     include_directories = [".."],
     deps = [
         "//hsthrift/common/util:fb-util-cxx",
