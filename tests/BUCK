@@ -1,4 +1,4 @@
-load("//buck2:thrift.bzl", "thrift_haskell_binary")
+load("//buck2:thrift.bzl", "thrift_haskell_test")
 
 # Exported for thrift-lib's own test-lib (its test-suite HsTest.Types is
 # generated from if/hs_test.thrift, which lives here, not under
@@ -55,7 +55,7 @@ _ANNOTATIONS = {
     "thrift/annotation/scope.thrift": ["Scope/Types.hs"],
 }
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "add-prefix",
     thrift_files = dict(_ANNOTATIONS, **{
             "if/hs_prefix.thrift": [
@@ -73,7 +73,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "binary-protocol",
     thrift_files = dict(_ANNOTATIONS, **{
             "if/foo.thrift": [
@@ -91,7 +91,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "const-gen",
     thrift_files = dict(_ANNOTATIONS, **{
             "if/constants.thrift": [
@@ -109,7 +109,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "const-parser",
     thrift_files = dict(_ANNOTATIONS, **{
             "if/constants.thrift": [
@@ -127,7 +127,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "const",
     thrift_files = dict(_ANNOTATIONS, **{
             "if/constants.thrift": [
@@ -148,7 +148,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "duplicate-names",
     thrift_files = {
         "if/duplicate.thrift": [
@@ -173,7 +173,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "enum-const",
     thrift_files = {
         "if/EnumConst.thrift": [
@@ -191,7 +191,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "enum",
     thrift_files = dict(_ANNOTATIONS, **{
             "if/enum.thrift": [
@@ -209,7 +209,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "exception",
     thrift_files = {
         "if/exception.thrift": [
@@ -227,7 +227,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "flags",
     thrift_files = {
         "if/flags.thrift": [
@@ -254,7 +254,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "has-field",
     thrift_files = {
         "if/hasfield.thrift": [
@@ -279,7 +279,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "includes",
     thrift_files = {
         "if/A.thrift": [
@@ -309,7 +309,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "input-checking",
     thrift_files = {
         "if/versions.thrift": [
@@ -327,7 +327,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "instances",
     thrift_files = {
         "if/monoid.thrift": [
@@ -345,7 +345,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "interaction",
     srcs = {"InteractionsTest.hs": "InteractionsTest.hs"},
     main = "InteractionsTest",
@@ -354,7 +354,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "interface",
     srcs = {"InterfaceTest.hs": "InterfaceTest.hs"},
     main = "InterfaceTest",
@@ -366,7 +366,7 @@ thrift_haskell_binary(
     ],
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "json",
     thrift_files = dict(_ANNOTATIONS, **{
             "if/foo.thrift": [
@@ -384,7 +384,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "lexer",
     srcs = {"LexerTest.hs": "LexerTest.hs"},
     main = "LexerTest",
@@ -395,7 +395,7 @@ thrift_haskell_binary(
     ],
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "map",
     thrift_files = dict(_ANNOTATIONS, **{
             "if/map.thrift": [
@@ -413,7 +413,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "messed-up-case",
     thrift_files = {
         "if/messed_up_case.thrift": [
@@ -431,7 +431,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "namespace",
     thrift_files = {
         "if/namespace.thrift": [
@@ -452,7 +452,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "parens",
     thrift_files = {
         "if/parens.thrift": [
@@ -470,7 +470,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "parser",
     srcs = {"ParserTest.hs": "ParserTest.hs"},
     main = "ParserTest",
@@ -479,7 +479,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "recursive",
     srcs = {"RecursiveTest.hs": "RecursiveTest.hs"},
     main = "RecursiveTest",
@@ -488,7 +488,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "required-symbols",
     thrift_files = {
         "if/huge.thrift": [
@@ -515,7 +515,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "scoped-enums",
     thrift_files = dict(_ANNOTATIONS, **{
             "if/scoped_enums.thrift": [
@@ -533,7 +533,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "service",
     thrift_files = dict(_ANNOTATIONS, **{
             "if/service.thrift": [
@@ -551,7 +551,7 @@ thrift_haskell_binary(
     packages = _COMMON_PACKAGES,
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "typechecker",
     srcs = {"TypecheckerTest.hs": "TypecheckerTest.hs"},
     main = "TypecheckerTest",
@@ -562,7 +562,7 @@ thrift_haskell_binary(
     ],
 )
 
-thrift_haskell_binary(
+thrift_haskell_test(
     name = "typechecker-lenient",
     srcs = {"TypecheckerTestLenient.hs": "TypecheckerTestLenient.hs"},
     main = "TypecheckerTestLenient",

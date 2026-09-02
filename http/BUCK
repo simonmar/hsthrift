@@ -1,4 +1,4 @@
-load("//buck2:haskell.bzl", "haskell_binary", "haskell_library")
+load("//buck2:haskell.bzl", "haskell_library", "haskell_test")
 load("//buck2:thrift.bzl", "thrift_haskell_library")
 
 haskell_library(
@@ -86,7 +86,7 @@ thrift_haskell_library(
     packages = _TEST_PACKAGES + ["containers"],
 )
 
-haskell_binary(
+haskell_test(
     name = "server",
     srcs = {"ServerTest.hs": "test/ServerTest.hs"},
     main = "ServerTest",

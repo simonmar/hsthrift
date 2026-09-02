@@ -1,4 +1,4 @@
-load("//buck2:haskell.bzl", "haskell_binary", "haskell_library")
+load("//buck2:haskell.bzl", "haskell_library", "haskell_test")
 load("//buck2:thrift.bzl", "thrift_haskell_library")
 
 # Reused by other packages' test-libs (thrift-http today) that generate the
@@ -165,7 +165,7 @@ thrift_haskell_library(
 
 _TEST_COMMON_DEPS = _TEST_DEPS + [":test-lib"]
 
-haskell_binary(
+haskell_test(
     name = "channel",
     srcs = {"ChannelTest.hs": "test/ChannelTest.hs"},
     main = "ChannelTest",
@@ -173,7 +173,7 @@ haskell_binary(
     packages = _TEST_PACKAGES,
 )
 
-haskell_binary(
+haskell_test(
     name = "socket-channel",
     srcs = {"SocketChannelTest.hs": "test/SocketChannelTest.hs"},
     main = "SocketChannelTest",
@@ -181,7 +181,7 @@ haskell_binary(
     packages = _TEST_PACKAGES,
 )
 
-haskell_binary(
+haskell_test(
     name = "client",
     srcs = {"ClientTest.hs": "test/ClientTest.hs"},
     main = "ClientTest",
@@ -189,7 +189,7 @@ haskell_binary(
     packages = _TEST_PACKAGES,
 )
 
-haskell_binary(
+haskell_test(
     name = "binary-parser",
     srcs = {"BinaryParserTest.hs": "test/BinaryParserTest.hs"},
     main = "BinaryParserTest",
@@ -197,7 +197,7 @@ haskell_binary(
     packages = _TEST_PACKAGES,
 )
 
-haskell_binary(
+haskell_test(
     name = "json-parsing",
     srcs = {"JSONStringTest.hs": "test/JSONStringTest.hs"},
     main = "JSONStringTest",
@@ -205,7 +205,7 @@ haskell_binary(
     packages = _TEST_PACKAGES,
 )
 
-haskell_binary(
+haskell_test(
     name = "json-num",
     srcs = {"JSONNumTest.hs": "test/JSONNumTest.hs"},
     main = "JSONNumTest",
@@ -213,7 +213,7 @@ haskell_binary(
     packages = _TEST_PACKAGES,
 )
 
-haskell_binary(
+haskell_test(
     name = "json-null",
     srcs = {"JSONNullTest.hs": "test/JSONNullTest.hs"},
     main = "JSONNullTest",

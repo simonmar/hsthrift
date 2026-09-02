@@ -1,4 +1,4 @@
-load("//buck2:haskell.bzl", "haskell_binary", "haskell_library")
+load("//buck2:haskell.bzl", "haskell_library", "haskell_test")
 load("//buck2:cxx.bzl", "cxx_library")
 
 cxx_library(
@@ -41,7 +41,7 @@ haskell_library(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "stream",
     srcs = [
         "StreamTest.hs",
@@ -84,7 +84,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "movavgrl",
     srcs = [
         "MovingAverageRateLimiterTest.hs",
@@ -127,7 +127,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "rlmap",
     srcs = [
         "RateLimiterMapTest.hs",
@@ -170,7 +170,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "alloc-limit",
     srcs = [
         "AllocLimitTest.hs",
@@ -213,7 +213,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "unit-tests",
     srcs = [
         "UnitTests.hs",
@@ -256,7 +256,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "rwvar",
     srcs = [
         "RWVarTest.hs",
@@ -299,7 +299,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "th",
     srcs = [
         "THTest.hs",
@@ -342,7 +342,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "filepath",
     srcs = [
         "FilePathTest.hs",
@@ -385,7 +385,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "optparse",
     srcs = [
         "OptParseTest.hs",
@@ -428,7 +428,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "lens",
     srcs = [
         "LensTest.hs",
@@ -471,7 +471,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "toexp",
     srcs = [
         "ToExpTest.hs",
@@ -514,7 +514,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "aeson",
     srcs = [
         "AesonTest.hs",
@@ -557,7 +557,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "buffer",
     srcs = [
         "BufferTest.hs",
@@ -600,7 +600,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "exception",
     srcs = [
         "ExceptionTest.hs",
@@ -643,7 +643,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "control-exception",
     srcs = [
         "ControlExceptionTest.hs",
@@ -686,7 +686,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "json-pretty",
     srcs = [
         "JSONPrettyTest.hs",
@@ -729,7 +729,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "io",
     srcs = [
         "IOTest.hs",
@@ -772,7 +772,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "time-sec",
     srcs = [
         "TimeSecTest.hs",
@@ -815,7 +815,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "list",
     srcs = [
         "ListTest.hs",
@@ -858,7 +858,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "graph",
     srcs = [
         "GraphTest.hs",
@@ -901,7 +901,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "concurrent",
     srcs = [
         "ConcurrentTest.hs",
@@ -944,7 +944,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "md5",
     srcs = [
         "MD5Test.hs",
@@ -987,7 +987,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "control-monad",
     srcs = [
         "Control/MonadTest.hs",
@@ -1030,7 +1030,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "string-quasi",
     srcs = [
         "StringQuasiTest.hs",
@@ -1073,7 +1073,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "iobuf",
     srcs = [
         "IOBufTest.hs",
@@ -1093,7 +1093,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "dynamic",
     srcs = [
         "DynamicTest.hs",
@@ -1115,7 +1115,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "test-hs-struct",
     srcs = [
         "HsStructTest.hs",

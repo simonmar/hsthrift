@@ -1,4 +1,4 @@
-load("//buck2:haskell.bzl", "haskell_binary", "haskell_library")
+load("//buck2:haskell.bzl", "haskell_binary", "haskell_library", "haskell_test")
 
 haskell_library(
     name = "thrift-compiler-lib",
@@ -67,7 +67,7 @@ haskell_binary(
     visibility = ["PUBLIC"],
 )
 
-haskell_binary(
+haskell_test(
     name = "thrift-compiler-tests",
     srcs = {
         "TestFixtures.hs": "test/TestFixtures.hs",
