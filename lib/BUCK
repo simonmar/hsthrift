@@ -147,6 +147,11 @@ haskell_library(
             "Math/Calculator/Client.hs",
             "Math/Calculator/Service.hs",
         ],
+        "test/if/echoer.thrift": [
+            "Echoer/Types.hs",
+            "Echoer/Echoer/Client.hs",
+            "Echoer/Echoer/Service.hs",
+        ],
         "//tests:hs_test.thrift": ["HsTest/Types.hs"],
     },
         thrift_flags = [],
@@ -158,11 +163,15 @@ haskell_library(
         "//tests:hs_test.thrift": dict(ANNOTATION_INCLUDES, **{
             "if/hs_test_instances.hs": "//tests:hs_test_instances.hs",
         }),
+        "test/if/echoer.thrift": dict(ANNOTATION_INCLUDES, **{
+            "test/if/math.thrift": "test/if/math.thrift",
+        }),
     },
         srcs = {"TestCommon.hs": "test/lib/TestCommon.hs"},
     ),
     deps = _TEST_DEPS,
     packages = _TEST_PACKAGES,
+    visibility = ["PUBLIC"],
 )
 
 _TEST_COMMON_DEPS = _TEST_DEPS + [":test-lib"]
