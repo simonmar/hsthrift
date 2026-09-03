@@ -1,0 +1,23 @@
+[cells]
+  root = .
+  prelude = buck2/prelude
+  toolchains = buck2/toolchains
+  # Only takes effect when hsthrift is built standalone (this .buckconfig
+  # is the outermost one) - when nested inside another project (e.g.
+  # Glean), that project's own `third-party` cell mapping wins instead,
+  # since cell names are global to whichever .buckconfig is outermost. See
+  # Glean's own .buckconfig for why that's the point, not a limitation.
+  third-party = third-party
+
+[cell_aliases]
+  config = prelude
+  ovr_config = prelude
+
+[parser]
+  target_platform_detector_spec = target:root//...->prelude//platforms:default \
+    target:prelude//...->prelude//platforms:default \
+    target:toolchains//...->prelude//platforms:default \
+    target:third-party//...->prelude//platforms:default
+
+[build]
+  execution_platforms = prelude//platforms:default

@@ -1,22 +1,13 @@
 load("//buck2:haskell.bzl", "haskell_library", "haskell_test")
-load("//buck2:thrift.bzl", "thrift_library")
+load("//buck2:thrift.bzl", "ANNOTATION_INCLUDES", "thrift_library")
 
 # Reused by other packages' test-libs (thrift-http today) that generate the
-# same Math/Echoer/annotation types from these files, the same way the
-# Makefile's thrift-hs target re-runs thrift-compiler on them per package
-# (`-o ../http/test` etc.) instead of sharing a single generated copy.
-export_file(
-    name = "thrift.thrift",
-    src = "thrift/annotation/thrift.thrift",
-    visibility = ["PUBLIC"],
-)
-
-export_file(
-    name = "scope.thrift",
-    src = "thrift/annotation/scope.thrift",
-    visibility = ["PUBLIC"],
-)
-
+# same Math/Echoer types from these files, the same way the Makefile's
+# thrift-hs target re-runs thrift-compiler on them per package (`-o
+# ../http/test` etc.) instead of sharing a single generated copy. The
+# thrift/annotation/*.thrift files themselves come straight from the
+# cell-root exports (//:annotation-*) instead of a lib-local copy - see
+# buck2/thrift.bzl's ANNOTATION_INCLUDES.
 export_file(
     name = "math.thrift",
     src = "test/if/math.thrift",
@@ -62,8 +53,8 @@ haskell_library(
     ),
     linker_flags = ["-lstdc++"],
     deps = [
-        "//hsthrift/common/github:fb-stubs",
-        "//hsthrift/common/util:fb-util",
+        "//common/github:fb-stubs",
+        "//common/util:fb-util",
     ],
     packages = [
         "QuickCheck",
@@ -111,8 +102,8 @@ haskell_library(
 _TEST_DEPS = [
     ":test-helpers",
     ":thrift-lib",
-    "//hsthrift/common/github:fb-stubs",
-    "//hsthrift/common/util:fb-util",
+    "//common/github:fb-stubs",
+    "//common/util:fb-util",
 ]
 
 _TEST_PACKAGES = [
@@ -142,10 +133,10 @@ haskell_library(
     srcs = thrift_library(
         name = "test-lib",
         thrift_files = {
-        # thrift/annotation/*.thrift, and math.thrift's include of it, only
-        # resolve with -I pointed at hsthrift/lib (matching the Makefile's
-        # `cd lib && thrift-compiler ...`); hs_test.thrift needs its own
-        # copy of thrift/annotation under hsthrift/tests instead.
+        # Each compiled independently here (matching the Makefile's `cd
+        # lib && thrift-compiler ...` re-running it per test-suite, no
+        # shared library) - see ANNOTATION_INCLUDES for how their own
+        # `include`s of each other resolve.
         "thrift/annotation/thrift.thrift": ["Facebook/Thrift/Annotation/Thrift/Thrift/Types.hs"],
         "thrift/annotation/scope.thrift": ["Scope/Types.hs"],
         "thrift/annotation/haskell.thrift": ["Facebook/Thrift/Annotation/Haskell/Haskell/Types.hs"],
@@ -156,12 +147,17 @@ haskell_library(
             "Math/Calculator/Client.hs",
             "Math/Calculator/Service.hs",
         ],
-        "//hsthrift/tests:hs_test.thrift": ["HsTest/Types.hs"],
+        "//tests:hs_test.thrift": ["HsTest/Types.hs"],
     },
-        thrift_flags = ["-I", "hsthrift/lib"],
+        thrift_flags = [],
         thrift_file_flags = {
-        "test/if/math.thrift": ["--use-int", "-I", "hsthrift/lib"],
-        "//hsthrift/tests:hs_test.thrift": ["-I", "hsthrift/tests"],
+        "test/if/math.thrift": ["--use-int"],
+    },
+        includes = ANNOTATION_INCLUDES,
+        thrift_file_includes = {
+        "//tests:hs_test.thrift": dict(ANNOTATION_INCLUDES, **{
+            "if/hs_test_instances.hs": "//tests:hs_test_instances.hs",
+        }),
     },
         srcs = {"TestCommon.hs": "test/lib/TestCommon.hs"},
     ),

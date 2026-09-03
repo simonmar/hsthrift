@@ -1,5 +1,5 @@
 load("//buck2:haskell.bzl", "haskell_library", "haskell_test")
-load("//buck2:thrift.bzl", "thrift_library")
+load("//buck2:thrift.bzl", "ANNOTATION_INCLUDES", "thrift_library")
 
 haskell_library(
     name = "thrift-http",
@@ -8,8 +8,8 @@ haskell_library(
         "Thrift/Server/HTTP.hs",
     ],
     deps = [
-        "//hsthrift/common/util:fb-util",
-        "//hsthrift/lib:thrift-lib",
+        "//common/util:fb-util",
+        "//lib:thrift-lib",
     ],
     packages = [
         "async",
@@ -29,10 +29,10 @@ haskell_library(
 )
 
 _TEST_DEPS = [
-    "//hsthrift/common/github:fb-stubs",
-    "//hsthrift/common/util:fb-util",
-    "//hsthrift/lib:test-helpers",
-    "//hsthrift/lib:thrift-lib",
+    "//common/github:fb-stubs",
+    "//common/util:fb-util",
+    "//lib:test-helpers",
+    "//lib:thrift-lib",
 ]
 
 _TEST_PACKAGES = [
@@ -56,29 +56,38 @@ haskell_library(
     srcs = thrift_library(
         name = "test-lib",
         thrift_files = {
-        # See hsthrift/lib/BUCK for why these come from there rather than
-        # being generated locally - matches the Makefile re-running
-        # thrift-compiler on the same hsthrift/lib .thrift files per
-        # package (`-o ../http/test`) instead of sharing one generated copy.
-        "//hsthrift/lib:thrift.thrift": ["Facebook/Thrift/Annotation/Thrift/Thrift/Types.hs"],
-        "//hsthrift/lib:scope.thrift": ["Scope/Types.hs"],
-        "//hsthrift/lib:math.thrift": [
+        # Math/Echoer come from lib/ rather than being generated locally -
+        # matches the Makefile re-running thrift-compiler on the same
+        # hsthrift/lib .thrift files per package (`-o ../http/test`)
+        # instead of sharing one generated copy. thrift.thrift/scope.thrift
+        # come straight from the cell-root exports (//:thrift.thrift,
+        # //:scope.thrift) that every annotation-needing target uses -
+        # see buck2/thrift.bzl's ANNOTATION_INCLUDES.
+        "//:thrift.thrift": ["Facebook/Thrift/Annotation/Thrift/Thrift/Types.hs"],
+        "//:scope.thrift": ["Scope/Types.hs"],
+        "//lib:math.thrift": [
             "Math/Types.hs",
             "Math/Adder/Client.hs",
             "Math/Adder/Service.hs",
             "Math/Calculator/Client.hs",
             "Math/Calculator/Service.hs",
         ],
-        "//hsthrift/lib:echoer.thrift": [
+        "//lib:echoer.thrift": [
             "Echoer/Types.hs",
             "Echoer/Echoer/Client.hs",
             "Echoer/Echoer/Service.hs",
         ],
     },
-        thrift_flags = ["-I", "hsthrift/lib"],
+        thrift_flags = [],
         thrift_file_flags = {
-        "//hsthrift/lib:math.thrift": ["--use-int", "-I", "hsthrift/lib"],
-        "//hsthrift/lib:echoer.thrift": ["--use-int", "-I", "hsthrift/lib"],
+        "//lib:math.thrift": ["--use-int"],
+        "//lib:echoer.thrift": ["--use-int"],
+    },
+        includes = ANNOTATION_INCLUDES,
+        thrift_file_includes = {
+        "//lib:echoer.thrift": dict(ANNOTATION_INCLUDES, **{
+            "test/if/math.thrift": "//lib:math.thrift",
+        }),
     },
         srcs = {
         "CalculatorHandler.hs": "test/common/CalculatorHandler.hs",

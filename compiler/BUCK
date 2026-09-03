@@ -32,7 +32,7 @@ haskell_library(
         "Thrift/Compiler/Plugins/Linter.hs": "plugins/Thrift/Compiler/Plugins/Linter.hs",
     },
     deps = [
-        "//hsthrift/common/util:fb-util",
+        "//common/util:fb-util",
     ],
     packages = [
         "aeson",
@@ -80,7 +80,7 @@ haskell_test(
     linker_flags = ["-threaded"],
     deps = [
         ":thrift-compiler-lib",
-        "//hsthrift/common/github:fb-stubs",
+        "//common/github:fb-stubs",
     ],
     packages = [
         "aeson-pretty",

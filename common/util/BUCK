@@ -19,7 +19,7 @@ cxx_library(
     # its own flag registration) - a dynamic link resolves this for free,
     # a static one doesn't.
     exported_linker_flags = ["-lglog", "-lgflags"],
-    deps = ["//hsthrift/folly-clib:folly-clib"],
+    deps = ["//folly-clib:folly-clib"],
     visibility = ["PUBLIC"],
 )
 
@@ -114,8 +114,8 @@ haskell_library(
     ],
     deps = [
         ":fb-util-cxx",
-        "//hsthrift/common/mangle:mangle",
-        "//hsthrift/folly-clib:folly-clib",
+        "//common/mangle:mangle",
+        "//folly-clib:folly-clib",
     ],
     packages = [
         "HUnit",

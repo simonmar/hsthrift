@@ -1,5 +1,5 @@
 load("//buck2:haskell.bzl", "haskell_test")
-load("//buck2:thrift.bzl", "thrift_library")
+load("//buck2:thrift.bzl", "ANNOTATION_INCLUDES", "thrift_library")
 # Exported for thrift-lib's own test-lib (its test-suite HsTest.Types is
 # generated from if/hs_test.thrift, which lives here, not under
 # hsthrift/lib) - see hsthrift/lib/BUCK.
@@ -20,10 +20,10 @@ export_file(
 )
 
 _COMMON_DEPS = [
-    "//hsthrift/common/github:fb-stubs",
-    "//hsthrift/compiler:thrift-compiler-lib",
-    "//hsthrift/lib:test-helpers",
-    "//hsthrift/lib:thrift-lib",
+    "//common/github:fb-stubs",
+    "//compiler:thrift-compiler-lib",
+    "//lib:test-helpers",
+    "//lib:thrift-lib",
 ]
 
 _COMMON_PACKAGES = [
@@ -64,10 +64,7 @@ haskell_test(
                 "HsPrefix/Types.hs",
             ],
         }),
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        includes = ANNOTATION_INCLUDES,
         srcs = {"AddPrefixTest.hs": "AddPrefixTest.hs"},
     ),
     main = "AddPrefixTest",
@@ -85,10 +82,7 @@ haskell_test(
                 "Foo/Types.hs",
             ],
         }),
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        includes = ANNOTATION_INCLUDES,
         srcs = {"BinaryProtocolTest.hs": "BinaryProtocolTest.hs"},
     ),
     main = "BinaryProtocolTest",
@@ -106,10 +100,7 @@ haskell_test(
                 "Constants/Types.hs",
             ],
         }),
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        includes = ANNOTATION_INCLUDES,
         srcs = {"ConstGenTest.hs": "ConstGenTest.hs"},
     ),
     main = "ConstGenTest",
@@ -127,10 +118,7 @@ haskell_test(
                 "Constants/Types.hs",
             ],
         }),
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        includes = ANNOTATION_INCLUDES,
         srcs = {"ConstParserTest.hs": "ConstParserTest.hs"},
     ),
     main = "ConstParserTest",
@@ -151,10 +139,7 @@ haskell_test(
                 "Foo/Types.hs",
             ],
         }),
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        includes = ANNOTATION_INCLUDES,
         srcs = {"ConstTest.hs": "ConstTest.hs"},
     ),
     main = "ConstTest",
@@ -172,15 +157,9 @@ haskell_test(
             "Duplicate/Types.hs",
         ],
     },
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
         thrift_file_flags = {
         "if/duplicate.thrift": [
             "--duplicate-names",
-            "-I",
-            "hsthrift/tests",
         ],
     },
         srcs = {"DuplicateNamesTest.hs": "DuplicateNamesTest.hs"},
@@ -200,10 +179,6 @@ haskell_test(
             "EnumConst/Types.hs",
         ],
     },
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
         srcs = {"EnumConstTest.hs": "EnumConstTest.hs"},
     ),
     main = "EnumConstTest",
@@ -221,10 +196,7 @@ haskell_test(
                 "Enum/Types.hs",
             ],
         }),
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        includes = ANNOTATION_INCLUDES,
         srcs = {"EnumTest.hs": "EnumTest.hs"},
     ),
     main = "EnumTest",
@@ -242,10 +214,6 @@ haskell_test(
             "Exception/Types.hs",
         ],
     },
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
         srcs = {"ExceptionTest.hs": "ExceptionTest.hs"},
     ),
     main = "ExceptionTest",
@@ -263,17 +231,11 @@ haskell_test(
             "Flags/Types.hs",
         ],
     },
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
         thrift_file_flags = {
         "if/flags.thrift": [
             "--use-int",
             "--use-hash-map",
             "--use-hash-set",
-            "-I",
-            "hsthrift/tests",
         ],
     },
         srcs = {"FlagsTest.hs": "FlagsTest.hs"},
@@ -293,15 +255,9 @@ haskell_test(
             "Hasfield/Types.hs",
         ],
     },
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
         thrift_file_flags = {
         "if/hasfield.thrift": [
             "--extra-hasfields",
-            "-I",
-            "hsthrift/tests",
         ],
     },
         srcs = {"HasFieldTest.hs": "HasFieldTest.hs"},
@@ -333,10 +289,21 @@ haskell_test(
             "E/Types.hs",
         ],
     },
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        thrift_file_includes = {
+        "if/A.thrift": {
+            "if/B.thrift": "if/B.thrift",
+            "if/C.thrift": "if/C.thrift",
+            "if/D.thrift": "if/D.thrift",
+            "if/E.thrift": "if/E.thrift",
+        },
+        "if/B.thrift": {
+            "if/D.thrift": "if/D.thrift",
+            "if/E.thrift": "if/E.thrift",
+        },
+        "if/C.thrift": {
+            "if/E.thrift": "if/E.thrift",
+        },
+    },
         srcs = {"IncludesTest.hs": "IncludesTest.hs"},
     ),
     main = "IncludesTest",
@@ -354,10 +321,6 @@ haskell_test(
             "Versions/Types.hs",
         ],
     },
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
         srcs = {"InputCheckingTest.hs": "InputCheckingTest.hs"},
     ),
     main = "InputCheckingTest",
@@ -375,10 +338,7 @@ haskell_test(
             "Monoid/Types.hs",
         ],
     },
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        includes = {"if/instances.hs": "if/instances.hs"},
         srcs = {"InstancesTest.hs": "InstancesTest.hs"},
     ),
     main = "InstancesTest",
@@ -423,10 +383,7 @@ haskell_test(
                 "Foo/Types.hs",
             ],
         }),
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        includes = ANNOTATION_INCLUDES,
         srcs = {"JSONTest.hs": "JSONTest.hs"},
     ),
     main = "JSONTest",
@@ -458,10 +415,7 @@ haskell_test(
                 "Map/Types.hs",
             ],
         }),
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        includes = ANNOTATION_INCLUDES,
         srcs = {"MapTest.hs": "MapTest.hs"},
     ),
     main = "MapTest",
@@ -479,10 +433,6 @@ haskell_test(
             "MessedUpCase/Types.hs",
         ],
     },
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
         srcs = {"MessedUpCaseTest.hs": "MessedUpCaseTest.hs"},
     ),
     main = "MessedUpCaseTest",
@@ -503,10 +453,9 @@ haskell_test(
             "Thrift/Test/Internal/NamespaceIncluded/Types.hs",
         ],
     },
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        thrift_file_includes = {
+        "if/namespace.thrift": {"if/namespace_included.thrift": "if/namespace_included.thrift"},
+    },
         srcs = {"NamespaceTest.hs": "NamespaceTest.hs"},
     ),
     main = "NamespaceTest",
@@ -524,10 +473,6 @@ haskell_test(
             "Parens/Types.hs",
         ],
     },
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
         srcs = {"ParensTest.hs": "ParensTest.hs"},
     ),
     main = "ParensTest",
@@ -570,18 +515,13 @@ haskell_test(
             "Huge/Service/Client.hs",
         ],
     },
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
         thrift_file_flags = {
         "if/huge.thrift": [
             "--required-symbols",
             "A,B,C,X,weNeedThis",
-            "-I",
-            "hsthrift/tests",
         ],
     },
+        includes = {"if/huge.hs": "if/huge.hs"},
         srcs = {"RequiredSymbolsTest.hs": "RequiredSymbolsTest.hs"},
     ),
     main = "RequiredSymbolsTest",
@@ -599,10 +539,7 @@ haskell_test(
                 "ScopedEnums/Types.hs",
             ],
         }),
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        includes = ANNOTATION_INCLUDES,
         srcs = {"ScopedEnumsTest.hs": "ScopedEnumsTest.hs"},
     ),
     main = "ScopedEnumsTest",
@@ -620,10 +557,7 @@ haskell_test(
                 "Service/Types.hs",
             ],
         }),
-        thrift_flags = [
-        "-I",
-        "hsthrift/tests",
-    ],
+        includes = ANNOTATION_INCLUDES,
         srcs = {"ServiceTest.hs": "ServiceTest.hs"},
     ),
     main = "ServiceTest",

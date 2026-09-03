@@ -1,0 +1,22 @@
+load("//buck2:haskell.bzl", "haskell_library")
+
+# thrift-haxl.cabal: a Haxl data source for Thrift RPCs.
+haskell_library(
+    name = "thrift-haxl",
+    srcs = [
+        "Haxl/DataSource/Thrift.hs",
+    ],
+    deps = [
+        "//lib:thrift-lib",
+    ],
+    packages = [
+        "hashable",
+        "haxl",
+        "mtl",
+        "text",
+        "text-show",
+        "transformers",
+        "unordered-containers",
+    ],
+    visibility = ["PUBLIC"],
+)
