@@ -1,0 +1,37 @@
+load("//buck2:haskell.bzl", "haskell_test")
+
+haskell_test(
+    name = "server",
+    srcs = [
+        "ServerTest.hs"
+    ],
+    main = "ServerTest",
+    linker_flags = ["-threaded"],
+    deps = [
+        "//http:thrift-http",
+        "//common/github:fb-stubs",
+        "//common/util:fb-util",
+        "//lib:test-helpers",
+        "//lib:thrift-lib",
+        "//http/test/common:test-lib",
+        "//lib:test-lib",
+    ],
+    packages = [
+        "http-client",
+        "http-types",
+        "HUnit",
+        "STMonadTrans",
+        "aeson",
+        "bytestring",
+        "data-default",
+        "deepseq",
+        "ghc-prim",
+        "hashable",
+        "hspec",
+        "hspec-contrib",
+        "text",
+        "transformers",
+        "unordered-containers",
+        "wai",
+    ],
+)

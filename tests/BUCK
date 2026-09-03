@@ -1,5 +1,5 @@
 load("//buck2:haskell.bzl", "haskell_test")
-load("//buck2:thrift.bzl", "ANNOTATION_INCLUDES", "thrift_library")
+load("//buck2:thrift.bzl", "thrift_srcs", "thrift_srcs_export")
 # Exported for thrift-lib's own test-lib (its test-suite HsTest.Types is
 # generated from if/hs_test.thrift, which lives here, not under
 # hsthrift/lib) - see hsthrift/lib/BUCK.
@@ -10,13 +10,27 @@ export_file(
     visibility = ["PUBLIC"],
 )
 
-# hs_include'd verbatim into the generated Types.hs by thrift-compiler; not
-# referenced directly by any buck2 rule, but kept here as a visible/tracked
-# sibling of hs_test.thrift rather than an untracked filesystem dependency.
-export_file(
+# hs_include'd verbatim into the generated Types.hs by thrift-compiler -
+# a thrift_srcs_export() rather than a plain export_file() so lib/BUCK's
+# test-lib can `deps` on it the same way as any other thrift dependency
+# (thrift_compile()'s `deps` needs the ThriftSrcsInfo provider, which only
+# thrift_srcs_export()/thrift_srcs() targets carry).
+thrift_srcs_export(
     name = "hs_test_instances.hs",
-    src = "if/hs_test_instances.hs",
+    srcs = {"if/hs_test_instances.hs": "if/hs_test_instances.hs"},
     visibility = ["PUBLIC"],
+)
+
+# Same deal: monoid.thrift/huge.thrift each `hs_include` a raw .hs file
+# sitting next to them, so each gets a `deps`-able collector too.
+thrift_srcs_export(
+    name = "instances.hs",
+    srcs = {"if/instances.hs": "if/instances.hs"},
+)
+
+thrift_srcs_export(
+    name = "huge.hs",
+    srcs = {"if/huge.hs": "if/huge.hs"},
 )
 
 _COMMON_DEPS = [
@@ -57,14 +71,14 @@ _ANNOTATIONS = {
 
 haskell_test(
     name = "add-prefix",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "add-prefix",
         thrift_files = dict(_ANNOTATIONS, **{
             "if/hs_prefix.thrift": [
                 "HsPrefix/Types.hs",
             ],
         }),
-        includes = ANNOTATION_INCLUDES,
+        deps = ["//:annotations"],
         srcs = {"AddPrefixTest.hs": "AddPrefixTest.hs"},
     ),
     main = "AddPrefixTest",
@@ -75,14 +89,14 @@ haskell_test(
 
 haskell_test(
     name = "binary-protocol",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "binary-protocol",
         thrift_files = dict(_ANNOTATIONS, **{
             "if/foo.thrift": [
                 "Foo/Types.hs",
             ],
         }),
-        includes = ANNOTATION_INCLUDES,
+        deps = ["//:annotations"],
         srcs = {"BinaryProtocolTest.hs": "BinaryProtocolTest.hs"},
     ),
     main = "BinaryProtocolTest",
@@ -93,14 +107,14 @@ haskell_test(
 
 haskell_test(
     name = "const-gen",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "const-gen",
         thrift_files = dict(_ANNOTATIONS, **{
             "if/constants.thrift": [
                 "Constants/Types.hs",
             ],
         }),
-        includes = ANNOTATION_INCLUDES,
+        deps = ["//:annotations"],
         srcs = {"ConstGenTest.hs": "ConstGenTest.hs"},
     ),
     main = "ConstGenTest",
@@ -111,14 +125,14 @@ haskell_test(
 
 haskell_test(
     name = "const-parser",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "const-parser",
         thrift_files = dict(_ANNOTATIONS, **{
             "if/constants.thrift": [
                 "Constants/Types.hs",
             ],
         }),
-        includes = ANNOTATION_INCLUDES,
+        deps = ["//:annotations"],
         srcs = {"ConstParserTest.hs": "ConstParserTest.hs"},
     ),
     main = "ConstParserTest",
@@ -129,7 +143,7 @@ haskell_test(
 
 haskell_test(
     name = "const",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "const",
         thrift_files = dict(_ANNOTATIONS, **{
             "if/constants.thrift": [
@@ -139,7 +153,7 @@ haskell_test(
                 "Foo/Types.hs",
             ],
         }),
-        includes = ANNOTATION_INCLUDES,
+        deps = ["//:annotations"],
         srcs = {"ConstTest.hs": "ConstTest.hs"},
     ),
     main = "ConstTest",
@@ -150,7 +164,7 @@ haskell_test(
 
 haskell_test(
     name = "duplicate-names",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "duplicate-names",
         thrift_files = {
         "if/duplicate.thrift": [
@@ -172,7 +186,7 @@ haskell_test(
 
 haskell_test(
     name = "enum-const",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "enum-const",
         thrift_files = {
         "if/EnumConst.thrift": [
@@ -189,14 +203,14 @@ haskell_test(
 
 haskell_test(
     name = "enum",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "enum",
         thrift_files = dict(_ANNOTATIONS, **{
             "if/enum.thrift": [
                 "Enum/Types.hs",
             ],
         }),
-        includes = ANNOTATION_INCLUDES,
+        deps = ["//:annotations"],
         srcs = {"EnumTest.hs": "EnumTest.hs"},
     ),
     main = "EnumTest",
@@ -207,7 +221,7 @@ haskell_test(
 
 haskell_test(
     name = "exception",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "exception",
         thrift_files = {
         "if/exception.thrift": [
@@ -224,7 +238,7 @@ haskell_test(
 
 haskell_test(
     name = "flags",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "flags",
         thrift_files = {
         "if/flags.thrift": [
@@ -248,7 +262,7 @@ haskell_test(
 
 haskell_test(
     name = "has-field",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "has-field",
         thrift_files = {
         "if/hasfield.thrift": [
@@ -270,7 +284,7 @@ haskell_test(
 
 haskell_test(
     name = "includes",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "includes",
         thrift_files = {
         "if/A.thrift": [
@@ -289,21 +303,8 @@ haskell_test(
             "E/Types.hs",
         ],
     },
-        thrift_file_includes = {
-        "if/A.thrift": {
-            "if/B.thrift": "if/B.thrift",
-            "if/C.thrift": "if/C.thrift",
-            "if/D.thrift": "if/D.thrift",
-            "if/E.thrift": "if/E.thrift",
-        },
-        "if/B.thrift": {
-            "if/D.thrift": "if/D.thrift",
-            "if/E.thrift": "if/E.thrift",
-        },
-        "if/C.thrift": {
-            "if/E.thrift": "if/E.thrift",
-        },
-    },
+        # A/B/C/D/E all see each other automatically - every file in the
+        # same thrift_files dict does (see thrift_srcs()'s own comment).
         srcs = {"IncludesTest.hs": "IncludesTest.hs"},
     ),
     main = "IncludesTest",
@@ -314,7 +315,7 @@ haskell_test(
 
 haskell_test(
     name = "input-checking",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "input-checking",
         thrift_files = {
         "if/versions.thrift": [
@@ -331,14 +332,14 @@ haskell_test(
 
 haskell_test(
     name = "instances",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "instances",
         thrift_files = {
         "if/monoid.thrift": [
             "Monoid/Types.hs",
         ],
     },
-        includes = {"if/instances.hs": "if/instances.hs"},
+        deps = [":instances.hs"],
         srcs = {"InstancesTest.hs": "InstancesTest.hs"},
     ),
     main = "InstancesTest",
@@ -349,7 +350,7 @@ haskell_test(
 
 haskell_test(
     name = "interaction",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "interaction",
         srcs = {"InteractionsTest.hs": "InteractionsTest.hs"},
     ),
@@ -361,7 +362,7 @@ haskell_test(
 
 haskell_test(
     name = "interface",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "interface",
         srcs = {"InterfaceTest.hs": "InterfaceTest.hs"},
     ),
@@ -376,14 +377,14 @@ haskell_test(
 
 haskell_test(
     name = "json",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "json",
         thrift_files = dict(_ANNOTATIONS, **{
             "if/foo.thrift": [
                 "Foo/Types.hs",
             ],
         }),
-        includes = ANNOTATION_INCLUDES,
+        deps = ["//:annotations"],
         srcs = {"JSONTest.hs": "JSONTest.hs"},
     ),
     main = "JSONTest",
@@ -394,7 +395,7 @@ haskell_test(
 
 haskell_test(
     name = "lexer",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "lexer",
         srcs = {"LexerTest.hs": "LexerTest.hs"},
     ),
@@ -408,14 +409,14 @@ haskell_test(
 
 haskell_test(
     name = "map",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "map",
         thrift_files = dict(_ANNOTATIONS, **{
             "if/map.thrift": [
                 "Map/Types.hs",
             ],
         }),
-        includes = ANNOTATION_INCLUDES,
+        deps = ["//:annotations"],
         srcs = {"MapTest.hs": "MapTest.hs"},
     ),
     main = "MapTest",
@@ -426,7 +427,7 @@ haskell_test(
 
 haskell_test(
     name = "messed-up-case",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "messed-up-case",
         thrift_files = {
         "if/messed_up_case.thrift": [
@@ -443,7 +444,7 @@ haskell_test(
 
 haskell_test(
     name = "namespace",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "namespace",
         thrift_files = {
         "if/namespace.thrift": [
@@ -453,9 +454,8 @@ haskell_test(
             "Thrift/Test/Internal/NamespaceIncluded/Types.hs",
         ],
     },
-        thrift_file_includes = {
-        "if/namespace.thrift": {"if/namespace_included.thrift": "if/namespace_included.thrift"},
-    },
+        # namespace.thrift sees namespace_included.thrift automatically -
+        # both are in the same thrift_files dict above.
         srcs = {"NamespaceTest.hs": "NamespaceTest.hs"},
     ),
     main = "NamespaceTest",
@@ -466,7 +466,7 @@ haskell_test(
 
 haskell_test(
     name = "parens",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "parens",
         thrift_files = {
         "if/parens.thrift": [
@@ -483,7 +483,7 @@ haskell_test(
 
 haskell_test(
     name = "parser",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "parser",
         srcs = {"ParserTest.hs": "ParserTest.hs"},
     ),
@@ -495,7 +495,7 @@ haskell_test(
 
 haskell_test(
     name = "recursive",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "recursive",
         srcs = {"RecursiveTest.hs": "RecursiveTest.hs"},
     ),
@@ -507,7 +507,7 @@ haskell_test(
 
 haskell_test(
     name = "required-symbols",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "required-symbols",
         thrift_files = {
         "if/huge.thrift": [
@@ -521,7 +521,7 @@ haskell_test(
             "A,B,C,X,weNeedThis",
         ],
     },
-        includes = {"if/huge.hs": "if/huge.hs"},
+        deps = [":huge.hs"],
         srcs = {"RequiredSymbolsTest.hs": "RequiredSymbolsTest.hs"},
     ),
     main = "RequiredSymbolsTest",
@@ -532,14 +532,14 @@ haskell_test(
 
 haskell_test(
     name = "scoped-enums",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "scoped-enums",
         thrift_files = dict(_ANNOTATIONS, **{
             "if/scoped_enums.thrift": [
                 "ScopedEnums/Types.hs",
             ],
         }),
-        includes = ANNOTATION_INCLUDES,
+        deps = ["//:annotations"],
         srcs = {"ScopedEnumsTest.hs": "ScopedEnumsTest.hs"},
     ),
     main = "ScopedEnumsTest",
@@ -550,14 +550,14 @@ haskell_test(
 
 haskell_test(
     name = "service",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "service",
         thrift_files = dict(_ANNOTATIONS, **{
             "if/service.thrift": [
                 "Service/Types.hs",
             ],
         }),
-        includes = ANNOTATION_INCLUDES,
+        deps = ["//:annotations"],
         srcs = {"ServiceTest.hs": "ServiceTest.hs"},
     ),
     main = "ServiceTest",
@@ -568,7 +568,7 @@ haskell_test(
 
 haskell_test(
     name = "typechecker",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "typechecker",
         srcs = {"TypecheckerTest.hs": "TypecheckerTest.hs"},
     ),
@@ -582,7 +582,7 @@ haskell_test(
 
 haskell_test(
     name = "typechecker-lenient",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "typechecker-lenient",
         srcs = {"TypecheckerTestLenient.hs": "TypecheckerTestLenient.hs"},
     ),

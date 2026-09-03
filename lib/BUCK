@@ -1,13 +1,12 @@
 load("//buck2:haskell.bzl", "haskell_library", "haskell_test")
-load("//buck2:thrift.bzl", "ANNOTATION_INCLUDES", "thrift_library")
+load("//buck2:thrift.bzl", "thrift_srcs")
 
 # Reused by other packages' test-libs (thrift-http today) that generate the
 # same Math/Echoer types from these files, the same way the Makefile's
 # thrift-hs target re-runs thrift-compiler on them per package (`-o
 # ../http/test` etc.) instead of sharing a single generated copy. The
 # thrift/annotation/*.thrift files themselves come straight from the
-# cell-root exports (//:annotation-*) instead of a lib-local copy - see
-# buck2/thrift.bzl's ANNOTATION_INCLUDES.
+# cell-root exports (//:annotations) instead of a lib-local copy.
 export_file(
     name = "math.thrift",
     src = "test/if/math.thrift",
@@ -22,7 +21,7 @@ export_file(
 
 haskell_library(
     name = "thrift-lib",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "thrift-lib",
         thrift_files = {
         # namespace hs in each .thrift file determines the generated path.
@@ -130,12 +129,12 @@ _TEST_PACKAGES = [
 
 haskell_library(
     name = "test-lib",
-    srcs = thrift_library(
+    srcs = thrift_srcs(
         name = "test-lib",
         thrift_files = {
         # Each compiled independently here (matching the Makefile's `cd
         # lib && thrift-compiler ...` re-running it per test-suite, no
-        # shared library) - see ANNOTATION_INCLUDES for how their own
+        # shared library) - see the `deps` below for how their own
         # `include`s of each other resolve.
         "thrift/annotation/thrift.thrift": ["Facebook/Thrift/Annotation/Thrift/Thrift/Types.hs"],
         "thrift/annotation/scope.thrift": ["Scope/Types.hs"],
@@ -158,15 +157,12 @@ haskell_library(
         thrift_file_flags = {
         "test/if/math.thrift": ["--use-int"],
     },
-        includes = ANNOTATION_INCLUDES,
-        thrift_file_includes = {
-        "//tests:hs_test.thrift": dict(ANNOTATION_INCLUDES, **{
-            "if/hs_test_instances.hs": "//tests:hs_test_instances.hs",
-        }),
-        "test/if/echoer.thrift": dict(ANNOTATION_INCLUDES, **{
-            "test/if/math.thrift": "test/if/math.thrift",
-        }),
-    },
+        # Every file above sees every other (echoer.thrift's own `include
+        # "test/if/math.thrift"` included) for free, since they're all in
+        # the same thrift_files dict above - only genuinely external deps
+        # (the shared annotations, and hs_test.thrift's own hs_include'd
+        # instances file) need listing here.
+        deps = ["//:annotations", "//tests:hs_test_instances.hs"],
         srcs = {"TestCommon.hs": "test/lib/TestCommon.hs"},
     ),
     deps = _TEST_DEPS,
