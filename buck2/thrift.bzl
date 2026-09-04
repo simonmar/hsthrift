@@ -188,20 +188,32 @@ def _thrift_stem(thrift_file):
     base = thrift_file.split(":")[-1].split("/")[-1]
     return base[:-len(".thrift")] if base.endswith(".thrift") else base
 
-def _thrift_name(thrift_file):
+def _thrift_name(thrift_file, full_paths = False):
     # The relative path thrift_file is known as inside the assembled
-    # directory (see thrift_compile's own comment) - the plain path itself
-    # for a plain path ("if/Foo.thrift"), since that already matches how
-    # some other file's `include` statement would name it. A cross-package
-    # label ("//other/pkg:Foo.thrift") has no such path to reuse - nothing
-    # in this repo ever `include`s a file referenced that way (it's always
+    # directory (see thrift_compile's own comment) - matching how some
+    # other file's `include` statement would name it, so that statement
+    # resolves once merged into the same directory. A cross-package label
+    # ("//other/pkg:Foo.thrift") has no such path to reuse - nothing in
+    # this repo ever `include`s a file referenced that way (it's always
     # *itself* the main file being compiled, via export_file), so its
     # in-sandbox name only has to be a valid one, not any particular one.
     if "//" in thrift_file or thrift_file.startswith(":"):
         return _thrift_stem(thrift_file) + ".thrift"
+
+    # Two real, incompatible conventions exist for a plain relative path:
+    # hsthrift's own .thrift files `include` each other by a path relative
+    # to whichever package they live in (e.g. "if/Foo.thrift", no package
+    # prefix - inherited from the Makefile era, where the compiler's cwd
+    # was set to that package directly); Glean's own .thrift files
+    # `include` each other by the *full* repo-root-relative path instead
+    # (e.g. "glean/config/service.thrift"). full_paths picks which one a
+    # given thrift_srcs()/thrift_library() caller's files use - it can't
+    # be auto-detected, since both are just plain strings.
+    if full_paths:
+        return native.package_name() + "/" + thrift_file
     return thrift_file
 
-def _thrift_compile_all(name, thrift_files, thrift_flags, thrift_file_flags, deps, srcs):
+def _thrift_compile_all(name, thrift_files, thrift_flags, thrift_file_flags, deps, srcs, full_paths):
     # Shared by thrift_srcs() and thrift_library() below: declares one
     # thrift_compile() per thrift_files entry (each one's own `deps`
     # pointing back at `name`'s own collector target, so every file in
@@ -216,7 +228,7 @@ def _thrift_compile_all(name, thrift_files, thrift_flags, thrift_file_flags, dep
         thrift_compile(
             name = gen_name,
             thrift_file = thrift_file,
-            thrift_name = _thrift_name(thrift_file),
+            thrift_name = _thrift_name(thrift_file, full_paths),
             flags = thrift_file_flags.get(thrift_file, thrift_flags),
             deps = deps,
             outs = outs,
@@ -249,14 +261,17 @@ def thrift_srcs(
         thrift_flags = [],
         thrift_file_flags = {},
         deps = [],
-        srcs = {}):
+        srcs = {},
+        visibility = ["PUBLIC"],
+        full_paths = False):
     collector = name + "-thrift"
     thrift_srcs_export(
         name = collector,
-        srcs = {_thrift_name(f): f for f in thrift_files},
+        srcs = {_thrift_name(f, full_paths): f for f in thrift_files},
         deps = deps,
+        visibility = visibility,
     )
-    return _thrift_compile_all(name, thrift_files, thrift_flags, thrift_file_flags, [":" + collector], srcs)
+    return _thrift_compile_all(name, thrift_files, thrift_flags, thrift_file_flags, [":" + collector], srcs, full_paths)
 
 # The usual entry point: compiles `thrift_files` (mapping each .thrift
 # file to the list of Haskell files it generates - module paths, same as
@@ -297,14 +312,15 @@ def thrift_library(
         hs2_deps = [],
         srcs = {},
         visibility = ["PUBLIC"],
+        full_paths = False,
         **haskell_kwargs):
     thrift_srcs_export(
         name = name,
-        srcs = {_thrift_name(f): f for f in thrift_files},
+        srcs = {_thrift_name(f, full_paths): f for f in thrift_files},
         deps = deps,
         visibility = visibility,
     )
-    all_srcs = _thrift_compile_all(name, thrift_files, thrift_flags, thrift_file_flags, [":" + name], srcs)
+    all_srcs = _thrift_compile_all(name, thrift_files, thrift_flags, thrift_file_flags, [":" + name], srcs, full_paths)
     haskell_library(
         name = name + "-hs2",
         srcs = all_srcs,
