@@ -1,0 +1,25 @@
+# Root PACKAGE file: registers buck2's cfg-modifier machinery so that
+# `buck2 build ... -m //buck2/constraints:opt` (or `:dev`) works (see
+# buck2.md TODO "we should support different build modes"). This can only
+# be done from the repository root PACKAGE file (set_cfg_constructor's own
+# restriction) - there is nowhere else to put it.
+#
+# Unlike the rest of this cell's own buck2/*.bzl (byte-identical to
+# Glean's own copies - see buck2.md's "make buck2/ and hsthrift/buck2/
+# identical" entry), the logic here genuinely can't run unconditionally:
+# when this checkout is nested inside another project (e.g. Glean), that
+# project's own root PACKAGE file is the one and only one allowed to call
+# set_cfg_constructor() project-wide - this cell's own copy of that exact
+# same call, evaluated as `hsthrift//PACKAGE` rather than `root//PACKAGE`,
+# hits that restriction and hard-errors the whole build (confirmed
+# directly). Only when this checkout is itself the outermost project (its
+# own `.buckconfig` maps `root = .`, so this file evaluates as
+# `root//PACKAGE`) is the call actually allowed -
+# cfg_constructor_if_standalone() checks that via get_cell_name().
+#
+# The condition itself has to live in buck2/cfg_constructor_if_standalone.
+# bzl, not here - a PACKAGE file can only contain a flat sequence of
+# top-level calls (no `if`/`def` directly in it, confirmed directly).
+load("//buck2:cfg_constructor_if_standalone.bzl", "cfg_constructor_if_standalone")
+
+cfg_constructor_if_standalone()
