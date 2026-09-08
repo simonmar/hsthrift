@@ -230,6 +230,16 @@ setup-folly::
 		cd ../.. && sed "s|__CPP_FILES__|$$(cat <folly/_build/cppfiles)|;s|__H_FILES__|$$(cat <folly/_build/hfiles)|" <folly-clib.cabal.in >folly-clib.cabal \
 	)
 	(cd folly-clib && \
+		echo "cxx_files = [" >cxx-files.bzl && \
+		grep '^FILES_CPP:' folly/_build/out | \
+			sed 's/FILES_CPP://' | \
+			sed "s|$$(pwd)/|\"|g" | \
+			grep -v folly/test/ | \
+	                sed 's|;|\n |g' | sed 's/$$/",/g' >>cxx-files.bzl && \
+		echo "]" >>cxx-files.bzl && \
+		find folly -name BUCK | xargs rm \
+	)
+	(cd folly-clib && \
 	   	wget $$(grep 'url =' ../build/fbcode_builder/manifests/fast_float | sed 's/^.*= *//'); \
 		tar xvzf *.tar.gz \
 	)
