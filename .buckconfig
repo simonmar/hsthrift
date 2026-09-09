@@ -8,10 +8,25 @@
   # since cell names are global to whichever .buckconfig is outermost. See
   # Glean's own .buckconfig for why that's the point, not a limitation.
   third-party = third-party
+  # A dummy cell the aliases below point at - just needs to exist and be
+  # empty. See the cell_aliases comment for why.
+  none = none
 
 [cell_aliases]
   config = prelude
   ovr_config = prelude
+  # The vendored prelude unconditionally loads *every* built-in rule type
+  # (js.bzl, android, ...) the moment anything loads prelude.bzl, even
+  # though this project uses none of them - and some of those modules'
+  # own top-level code references `fbcode`/`fbsource`/`buck` cells
+  # directly (confirmed via a real failure: js.bzl's `_platform` attr
+  # default resolves a `fbsource//...` target pattern just to compute a
+  # select(), unconditionally, at load time). Glean's own root
+  # .buckconfig already has this same fallback for the same reason -
+  # needed here too now that hsthrift can build fully standalone.
+  fbcode = none
+  fbsource = none
+  buck = none
 
 [parser]
   target_platform_detector_spec = target:root//...->prelude//platforms:default \
