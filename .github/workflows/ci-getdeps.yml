@@ -49,6 +49,7 @@ jobs:
       - name: Install required packages
         run : >-
           apt-get install -y
+          sudo
           g++
           cmake
           make
@@ -162,6 +163,27 @@ jobs:
       - if: matrix.buildtype == 'buck2'
         name: Build dependencies
         run: cabal $CABAL_CONFIG_FLAGS build all --only-dependencies
+
+      - if: matrix.buildtype == 'buck2'
+        name: Fix HOME ownership for buck2
+        # This container job runs as root, but $HOME (/github/home) is
+        # bind-mounted from the runner host, so it keeps the host
+        # runner's UID as owner rather than root's - buck2 refuses to
+        # start as root unless $HOME is *also* owned by root ("buck2 is
+        # not allowed to run as root (unless home dir is owned by
+        # root)"). cabal/ghcup don't care about this mismatch, so this
+        # is only needed for the buck2 buildtype.
+        run: chown -R root:root "$HOME"
+
+      - if: matrix.buildtype == 'buck2'
+        name: Install buck2
+        uses: zadlg/buck2-github-composite-action@v3
+        with:
+          release-tag: '2026-09-01'
+          arch: 'x86_64'
+          platform: 'unknown-linux-gnu'
+          sha384: 'a17cf63f52abec68a2abbae2047202dd938294b23229702c02d483ade2c6e99917911398954ae2122ee6cb902afb1873'
+          output-path: '/usr/bin/buck2'
 
       - if: matrix.buildtype == 'buck2'
         name: Setup buck2 build
