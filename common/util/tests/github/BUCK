@@ -1,0 +1,8 @@
+load("//buck2:haskell.bzl", "haskell_library")
+
+haskell_library(
+    name = "spec-runner",
+    srcs = ["SpecRunner.hs"],
+    packages = ["hspec"],
+    visibility = ["PUBLIC"],
+)
