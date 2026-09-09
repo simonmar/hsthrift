@@ -86,6 +86,18 @@ jobs:
           libgmock-dev
           libbenchmark-dev
 
+      - if: matrix.buildtype == 'buck2'
+        name: Install clang
+        # buck2's own built-in cxx toolchain auto-detection (a buck2
+        # internal, not anything in buck2/*.bzl) defaults to `clang++` as
+        # the C/C++ compiler unconditionally, regardless of what's
+        # actually installed (confirmed via a real failure: hsc2hs
+        # invoked with `--cc=clang++` failed with "createProcess:
+        # posix_spawnp: does not exist" on this container, which only had
+        # g++). Cabal's own build doesn't need this (it uses GHC's own
+        # configured C compiler, plain gcc/g++) - only buck2 does.
+        run: apt-get install -y clang
+
       - name: Setup Haskell
         run: |
           curl --proto '=https' --tlsv1.2 -sSf "https://downloads.haskell.org/~ghcup/x86_64-linux-ghcup" -o "$LOCAL_BIN"/ghcup
