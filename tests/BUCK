@@ -60,30 +60,23 @@ _COMMON_PACKAGES = [
     "vector",
 ]
 
-# Shared by every test-suite below that uses custom field/struct annotations
-# (matches how each cabal test-suite independently lists these as
-# other-modules - no shared library, so each binary regenerates them).
-_ANNOTATIONS = {
-    "thrift/annotation/haskell.thrift": ["Facebook/Thrift/Annotation/Haskell/Haskell/Types.hs"],
-    "thrift/annotation/thrift.thrift": ["Facebook/Thrift/Annotation/Thrift/Thrift/Types.hs"],
-    "thrift/annotation/scope.thrift": ["Scope/Types.hs"],
-}
-
 haskell_test(
     name = "add-prefix",
     srcs = thrift_srcs(
         name = "add-prefix",
-        thrift_files = dict(_ANNOTATIONS, **{
+        thrift_files = {
             "if/hs_prefix.thrift": [
                 "HsPrefix/Types.hs",
             ],
-        }),
-        deps = ["//:annotations"],
+        },
+        deps = [
+            "//thrift/annotation:thrift-annotation-thrift",
+        ],
         srcs = {"AddPrefixTest.hs": "AddPrefixTest.hs"},
     ),
     main = "AddPrefixTest",
     linker_flags = ["-threaded"],
-    deps = _COMMON_DEPS,
+    deps = _COMMON_DEPS + ["//thrift/annotation:thrift-annotation"],
     packages = _COMMON_PACKAGES,
 )
 
@@ -91,17 +84,19 @@ haskell_test(
     name = "binary-protocol",
     srcs = thrift_srcs(
         name = "binary-protocol",
-        thrift_files = dict(_ANNOTATIONS, **{
+        thrift_files = {
             "if/foo.thrift": [
                 "Foo/Types.hs",
             ],
-        }),
-        deps = ["//:annotations"],
+        },
+        deps = [
+            "//thrift/annotation:thrift-annotation-thrift",
+        ],
         srcs = {"BinaryProtocolTest.hs": "BinaryProtocolTest.hs"},
     ),
     main = "BinaryProtocolTest",
     linker_flags = ["-threaded"],
-    deps = _COMMON_DEPS,
+    deps = _COMMON_DEPS + ["//thrift/annotation:thrift-annotation"],
     packages = _COMMON_PACKAGES,
 )
 
@@ -109,17 +104,19 @@ haskell_test(
     name = "const-gen",
     srcs = thrift_srcs(
         name = "const-gen",
-        thrift_files = dict(_ANNOTATIONS, **{
+        thrift_files = {
             "if/constants.thrift": [
                 "Constants/Types.hs",
             ],
-        }),
-        deps = ["//:annotations"],
+        },
+        deps = [
+            "//thrift/annotation:thrift-annotation-thrift",
+        ],
         srcs = {"ConstGenTest.hs": "ConstGenTest.hs"},
     ),
     main = "ConstGenTest",
     linker_flags = ["-threaded"],
-    deps = _COMMON_DEPS,
+    deps = _COMMON_DEPS + ["//thrift/annotation:thrift-annotation"],
     packages = _COMMON_PACKAGES,
 )
 
@@ -127,17 +124,19 @@ haskell_test(
     name = "const-parser",
     srcs = thrift_srcs(
         name = "const-parser",
-        thrift_files = dict(_ANNOTATIONS, **{
+        thrift_files = {
             "if/constants.thrift": [
                 "Constants/Types.hs",
             ],
-        }),
-        deps = ["//:annotations"],
+        },
+        deps = [
+            "//thrift/annotation:thrift-annotation-thrift",
+        ],
         srcs = {"ConstParserTest.hs": "ConstParserTest.hs"},
     ),
     main = "ConstParserTest",
     linker_flags = ["-threaded"],
-    deps = _COMMON_DEPS,
+    deps = _COMMON_DEPS + ["//thrift/annotation:thrift-annotation"],
     packages = _COMMON_PACKAGES,
 )
 
@@ -145,20 +144,22 @@ haskell_test(
     name = "const",
     srcs = thrift_srcs(
         name = "const",
-        thrift_files = dict(_ANNOTATIONS, **{
+        thrift_files = {
             "if/constants.thrift": [
                 "Constants/Types.hs",
             ],
             "if/foo.thrift": [
                 "Foo/Types.hs",
             ],
-        }),
-        deps = ["//:annotations"],
+        },
+        deps = [
+            "//thrift/annotation:thrift-annotation-thrift",
+        ],
         srcs = {"ConstTest.hs": "ConstTest.hs"},
     ),
     main = "ConstTest",
     linker_flags = ["-threaded"],
-    deps = _COMMON_DEPS,
+    deps = _COMMON_DEPS + ["//thrift/annotation:thrift-annotation"],
     packages = _COMMON_PACKAGES,
 )
 
@@ -205,17 +206,19 @@ haskell_test(
     name = "enum",
     srcs = thrift_srcs(
         name = "enum",
-        thrift_files = dict(_ANNOTATIONS, **{
+        thrift_files = {
             "if/enum.thrift": [
                 "Enum/Types.hs",
             ],
-        }),
-        deps = ["//:annotations"],
+        },
+        deps = [
+            "//thrift/annotation:thrift-annotation-thrift",
+        ],
         srcs = {"EnumTest.hs": "EnumTest.hs"},
     ),
     main = "EnumTest",
     linker_flags = ["-threaded"],
-    deps = _COMMON_DEPS,
+    deps = _COMMON_DEPS + ["//thrift/annotation:thrift-annotation"],
     packages = _COMMON_PACKAGES,
 )
 
@@ -379,17 +382,19 @@ haskell_test(
     name = "json",
     srcs = thrift_srcs(
         name = "json",
-        thrift_files = dict(_ANNOTATIONS, **{
+        thrift_files = {
             "if/foo.thrift": [
                 "Foo/Types.hs",
             ],
-        }),
-        deps = ["//:annotations"],
+        },
+        deps = [
+            "//thrift/annotation:thrift-annotation-thrift",
+        ],
         srcs = {"JSONTest.hs": "JSONTest.hs"},
     ),
     main = "JSONTest",
     linker_flags = ["-threaded"],
-    deps = _COMMON_DEPS,
+    deps = _COMMON_DEPS + ["//thrift/annotation:thrift-annotation"],
     packages = _COMMON_PACKAGES,
 )
 
@@ -411,17 +416,19 @@ haskell_test(
     name = "map",
     srcs = thrift_srcs(
         name = "map",
-        thrift_files = dict(_ANNOTATIONS, **{
+        thrift_files = {
             "if/map.thrift": [
                 "Map/Types.hs",
             ],
-        }),
-        deps = ["//:annotations"],
+        },
+        deps = [
+            "//thrift/annotation:thrift-annotation-thrift",
+        ],
         srcs = {"MapTest.hs": "MapTest.hs"},
     ),
     main = "MapTest",
     linker_flags = ["-threaded"],
-    deps = _COMMON_DEPS,
+    deps = _COMMON_DEPS + ["//thrift/annotation:thrift-annotation"],
     packages = _COMMON_PACKAGES,
 )
 
@@ -534,17 +541,19 @@ haskell_test(
     name = "scoped-enums",
     srcs = thrift_srcs(
         name = "scoped-enums",
-        thrift_files = dict(_ANNOTATIONS, **{
+        thrift_files = {
             "if/scoped_enums.thrift": [
                 "ScopedEnums/Types.hs",
             ],
-        }),
-        deps = ["//:annotations"],
+        },
+        deps = [
+            "//thrift/annotation:thrift-annotation-thrift",
+        ],
         srcs = {"ScopedEnumsTest.hs": "ScopedEnumsTest.hs"},
     ),
     main = "ScopedEnumsTest",
     linker_flags = ["-threaded"],
-    deps = _COMMON_DEPS,
+    deps = _COMMON_DEPS + ["//thrift/annotation:thrift-annotation"],
     packages = _COMMON_PACKAGES,
 )
 
@@ -552,17 +561,19 @@ haskell_test(
     name = "service",
     srcs = thrift_srcs(
         name = "service",
-        thrift_files = dict(_ANNOTATIONS, **{
+        thrift_files = {
             "if/service.thrift": [
                 "Service/Types.hs",
             ],
-        }),
-        deps = ["//:annotations"],
+        },
+        deps = [
+            "//thrift/annotation:thrift-annotation-thrift",
+        ],
         srcs = {"ServiceTest.hs": "ServiceTest.hs"},
     ),
     main = "ServiceTest",
     linker_flags = ["-threaded"],
-    deps = _COMMON_DEPS,
+    deps = _COMMON_DEPS + ["//thrift/annotation:thrift-annotation"],
     packages = _COMMON_PACKAGES,
 )
 

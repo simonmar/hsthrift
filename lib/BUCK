@@ -1,24 +1,6 @@
 load("//buck2:haskell.bzl", "haskell_library", "haskell_test")
 load("//buck2:thrift.bzl", "thrift_srcs")
 
-# Reused by other packages' test-libs (thrift-http today) that generate the
-# same Math/Echoer types from these files, the same way the Makefile's
-# thrift-hs target re-runs thrift-compiler on them per package (`-o
-# ../http/test` etc.) instead of sharing a single generated copy. The
-# thrift/annotation/*.thrift files themselves come straight from the
-# cell-root exports (//:annotations) instead of a lib-local copy.
-export_file(
-    name = "math.thrift",
-    src = "test/if/math.thrift",
-    visibility = ["PUBLIC"],
-)
-
-export_file(
-    name = "echoer.thrift",
-    src = "test/if/echoer.thrift",
-    visibility = ["PUBLIC"],
-)
-
 haskell_library(
     name = "thrift-lib",
     srcs = thrift_srcs(
@@ -136,9 +118,6 @@ haskell_library(
         # lib && thrift-compiler ...` re-running it per test-suite, no
         # shared library) - see the `deps` below for how their own
         # `include`s of each other resolve.
-        "thrift/annotation/thrift.thrift": ["Facebook/Thrift/Annotation/Thrift/Thrift/Types.hs"],
-        "thrift/annotation/scope.thrift": ["Scope/Types.hs"],
-        "thrift/annotation/haskell.thrift": ["Facebook/Thrift/Annotation/Haskell/Haskell/Types.hs"],
         "test/if/math.thrift": [
             "Math/Types.hs",
             "Math/Adder/Client.hs",
@@ -162,10 +141,15 @@ haskell_library(
         # the same thrift_files dict above - only genuinely external deps
         # (the shared annotations, and hs_test.thrift's own hs_include'd
         # instances file) need listing here.
-        deps = ["//:annotations", "//tests:hs_test_instances.hs"],
+        deps = [
+            "//thrift/annotation:thrift-annotation-thrift",
+            "//tests:hs_test_instances.hs"
+        ],
         srcs = {"TestCommon.hs": "test/lib/TestCommon.hs"},
     ),
-    deps = _TEST_DEPS,
+    deps = _TEST_DEPS + [
+        "//thrift/annotation:thrift-annotation",
+    ],
     packages = _TEST_PACKAGES,
     visibility = ["PUBLIC"],
 )
