@@ -10,11 +10,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ghc: [8.6.5, 8.8.4, 8.10.7, 9.2.8, 9.4.7, 9.6.6, 9.8.2]
-        buildtype: [getdeps]
-        include:
-          - ghc: 9.4.7
-            buildtype: cabal
+        ghc: [9.4.7]
+        buildtype: [cabal, buck2]
     runs-on: ubuntu-latest
     container:
       image: ubuntu:24.04
@@ -103,7 +100,7 @@ jobs:
           echo "BUILD_PACKAGES=folly-clib fb-util fb-stubs mangle thrift-lib thrift-server thrift-compiler thrift-tests thrift-haxl thrift-cpp-channel thrift-http" >> "$GITHUB_ENV"
           echo "TEST_PACKAGES=fb-util mangle thrift-lib thrift-server thrift-compiler thrift-tests thrift-http" >> "$GITHUB_ENV"
 
-      - if: matrix.buildtype == 'cabal'
+      - if: matrix.buildtype != 'getdeps'
         name: Setup PACKAGES
         run: |
           echo "BUILD_PACKAGES=folly-clib fb-util fb-stubs mangle thrift-lib thrift-compiler thrift-haxl thrift-http" >> "$GITHUB_ENV"
@@ -130,12 +127,12 @@ jobs:
         run: |
           echo CABAL_CONFIG_FLAGS="$CABAL_CONFIG_FLAGS -f-bundled-folly" >>"$GITHUB_ENV"
 
-      - if: matrix.buildtype == 'cabal'
+      - if: matrix.buildtype != 'getdeps'
         name: Set Cabal flags
         run: |
           echo CABAL_CONFIG_FLAGS="$CABAL_CONFIG_FLAGS -f-fbthrift" >>"$GITHUB_ENV"
 
-      - if: matrix.buildtype == 'cabal'
+      - if: matrix.buildtype != 'getdeps'
         name: Install dependencies needed by the Cabal build
         run: |
           apt-get install -y libfmt-dev
@@ -162,17 +159,37 @@ jobs:
       - name: Create the thrift/ symlinks
         run: make symlinks
 
-      - name: Build everything up to thrift-compiler
+      - if: matrix.buildtype == 'buck2'
+        name: Build dependencies
+        run: cabal $CABAL_CONFIG_FLAGS build all --only-dependencies
+
+      - if: matrix.buildtype == 'buck2'
+        name: Setup buck2 build
+        run: python3 buck2/gen-haskell-prebuilt.py
+
+      - if: matrix.buildtype == 'buck2'
+        name: Build everything
+        run: buck2 build //...
+
+      - if: matrix.buildtype == 'buck2'
+        name: Run tests
+        run: buck2 test //...
+
+      - if: matrix.buildtype != 'buck2'
+        name: Build everything up to thrift-compiler
         run: cabal $CABAL_CONFIG_FLAGS build exe:thrift-compiler
 
-      - name: Generate Haskell code from thrift files
+      - if: matrix.buildtype != 'buck2'
+        name: Generate Haskell code from thrift files
         run: make thrift-hs
 
-      - name: Generate source distributions for all packages
+      - if: matrix.buildtype != 'buck2'
+        name: Generate source distributions for all packages
         run: |
           cabal sdist $BUILD_PACKAGES
 
-      - name: Unpack source distributions in new directory
+      - if: matrix.buildtype != 'buck2'
+        name: Unpack source distributions in new directory
         run: |
           mkdir _sdists
           cd _sdists
@@ -182,10 +199,12 @@ jobs:
           cp ../ci-sdist.cabal.project cabal.project
           cd ..
 
-      - name: Build all packages
+      - if: matrix.buildtype != 'buck2'
+        name: Build all packages
         run: cabal $CABAL_CONFIG_FLAGS build $BUILD_PACKAGES
         working-directory: ./_sdists
 
-      - name: Run testsuites
+      - if: matrix.buildtype != 'buck2'
+        name: Run testsuites
         run: cabal $CABAL_CONFIG_FLAGS test $TEST_PACKAGES --keep-going
         working-directory: ./_sdists
