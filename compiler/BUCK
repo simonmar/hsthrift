@@ -77,7 +77,6 @@ haskell_test(
         "Util.hs": "test/github/Util.hs",
     },
     main = "TestFixtures",
-    linker_flags = ["-threaded"],
     deps = [
         ":thrift-compiler-lib",
         "//common/github:fb-stubs",
