@@ -196,6 +196,11 @@ install::
 # Unpack the correct revisions of folly and fast_float under hsthrift/folly,
 # run cmake to generate folly-config.h, and collect the source files from
 # cmake to splice into the .cabal file.
+#
+# We explicitly disable some library detection with
+# `-DCMAKE_DISABLE...` to keep things more deterministic and limit
+# dependencies. Otherwise the `extra-libraries` needed for Cabal would
+# depend on whatever is installed on the local machine.
 .PHONY: setup-folly
 setup-folly::
 	rm -rf folly-clib/folly folly-clib/fast_float* folly-clib/v*.tar.gz
@@ -215,7 +220,14 @@ setup-folly::
 		sed -i 's|^\(.*Create OBJECT library.*\)$$|  list(TRANSFORM _srcs PREPEND $${CMAKE_CURRENT_SOURCE_DIR}/ OUTPUT_VARIABLE _abssrcs)\n  message("FILES_CPP: $${_abssrcs}")\n\n\1|' CMake/FollyFunctions.cmake && \
 		echo 'message("FILES_H:$${hfiles}")' >>CMakeLists.txt && \
 		mkdir _build && cd _build && \
-		cmake .. 2>&1 | sed 's/[^m]*m//g' | tee out && \
+		cmake .. \
+			-DCMAKE_DISABLE_FIND_PACKAGE_BZip2=ON \
+			-DCMAKE_DISABLE_FIND_PACKAGE_LZ4=ON \
+			-DCMAKE_DISABLE_FIND_PACKAGE_Zstd=ON \
+			-DCMAKE_DISABLE_FIND_PACKAGE_Snappy=ON \
+			-DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=ON \
+			-DCMAKE_DISABLE_FIND_PACKAGE_LibLZMA=ON \
+			2>&1 | sed 's/[^m]*m//g' | tee out && \
 		grep '^FILES_CPP:' out | \
 			sed 's/FILES_CPP://' | \
 			sed "s|$$(dirname $$(pwd))/|folly/|g" | \
