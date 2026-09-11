@@ -2,16 +2,7 @@ load("//buck2:cxx.bzl", "cxx_library")
 load("@prelude//third-party:pkgconfig.bzl", "external_pkgconfig_library")
 load("cxx-files.bzl", "cxx_files")
 
-# Matches folly-clib.cabal.in's own `pkgconfig-depends: fmt, libglog,
-# openssl, snappy, libunwind` (snappy excluded - see the comment on
-# `exported_linker_flags` below) - asking pkg-config for these rather
-# than hand-copying whatever its output happened to be onto one machine
-# once means the actual install locations/extra flags (e.g. libunwind's
-# own `-I/usr/include/x86_64-linux-gnu`) come along for free, and stay
-# correct if they ever change. Plain, ordinary `exported_deps` below -
-# safe even though this reaches Haskell FFI-stub compiles transitively
-# (glean/rts and friends depend on this) - see
-# buck2/prelude/third-party/pkgconfig.bzl's own comment on why.
+# pkgconfig dependencies match those in folly-clib.cabal
 external_pkgconfig_library(
     name = "fmt",
 )
@@ -23,13 +14,6 @@ external_pkgconfig_library(
 external_pkgconfig_library(
     name = "glog",
     package = "libglog",
-    # libglog.pc's own `Libs:` is just `-lglog` - gflags is a real
-    # DT_NEEDED dependency of libglog.so (glog uses it for its own flag
-    # registration), but not something libglog.pc declares itself
-    # (confirmed directly - `pkg-config --libs libglog` alone never
-    # mentions it, static or not). A dynamic link resolves this for free
-    # via glog.so's own transitive NEEDED chain; ours doesn't, so it has
-    # to be an explicit dep here instead.
     deps = [":gflags"],
 )
 
@@ -42,12 +26,6 @@ external_pkgconfig_library(
     package = "libunwind",
 )
 
-# Not one of folly-clib.cabal.in's own pkgconfig-depends (folly needs
-# libevent unconditionally, no Cabal declaration at all) - declared here
-# anyway, rather than as a plain hardcoded flag like aio/sodium/atomic
-# below, because fb-util.cabal *does* list it via pkgconfig-depends
-# (hsthrift/common/util/BUCK's fb-util-cxx reuses this target rather than
-# shelling out to pkg-config a second time for the same library).
 external_pkgconfig_library(
     name = "event",
     package = "libevent",
@@ -78,17 +56,6 @@ cxx_library(
         "-laio",
         "-lsodium",
         "-latomic",
-        # No bz2/zstd/lz4/snappy/z/lzma here on purpose: each is its own
-        # optional codec in folly/compression/Compression.cpp (`#if
-        # FOLLY_HAVE_LIB<NAME>`, confirmed directly), and `make
-        # setup-folly` explicitly disables find_package() for all six
-        # (see its own comment) since nothing in glean/hsthrift's own
-        # code uses any of them - so they're never compiled in, and
-        # listing them here would just be asking the linker for
-        # libraries nothing references (a real CI failure once already:
-        # "cannot find -lbz2" on a machine without libbz2-dev, back when
-        # this list still hardcoded all six regardless of whether they
-        # were actually needed).
     ],
     exported_deps = [
         ":fmt",

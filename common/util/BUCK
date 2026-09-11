@@ -15,14 +15,6 @@ cxx_library(
     ],
     include_directories = ["."],
     public_include_directories = ["."],
-    # Matches fb-util.cabal's own `pkgconfig-depends: libglog, libevent,
-    # fmt, gflags` - reusing folly-clib's own pkgconfig targets (see its
-    # own BUCK) rather than shelling out to pkg-config a second time for
-    # the same four libraries. Plain `exported_deps`, safe to re-export
-    # to fb-util-cxx's own dependents (the sibling `fb-util`
-    # haskell_library() below included) - see
-    # buck2/prelude/third-party/pkgconfig.bzl's own comment on why this
-    # doesn't risk the GHC FFI-stub breakage it used to.
     exported_deps = [
         "//folly-clib:folly-clib",
         "//folly-clib:glog",
