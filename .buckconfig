@@ -1,5 +1,7 @@
 [cells]
   root = .
+  # So that we can use absolute paths like hsthrift//... in the prelude
+  hsthrift = .
   prelude = buck2/prelude
   toolchains = buck2/toolchains
   # Only takes effect when hsthrift is built standalone (this .buckconfig
