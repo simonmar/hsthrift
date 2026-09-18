@@ -6,10 +6,12 @@
   toolchains = buck2/toolchains
   # Only takes effect when hsthrift is built standalone (this .buckconfig
   # is the outermost one) - when nested inside another project (e.g.
-  # Glean), that project's own `third-party` cell mapping wins instead,
-  # since cell names are global to whichever .buckconfig is outermost. See
-  # Glean's own .buckconfig for why that's the point, not a limitation.
-  third-party = third-party
+  # Glean), that project's own `third-party-haskell` cell mapping wins
+  # instead, since cell names are global to whichever .buckconfig is
+  # outermost. See Glean's own .buckconfig for why that's the point, not
+  # a limitation. Deliberately just the haskell/ subdirectory, not all of
+  # third-party/ - see that file's own BUCK's comment.
+  third-party-haskell = third-party/haskell
   # A dummy cell the aliases below point at - just needs to exist and be
   # empty. See the cell_aliases comment for why.
   none = none
@@ -34,7 +36,7 @@
   target_platform_detector_spec = target:root//...->prelude//platforms:default \
     target:prelude//...->prelude//platforms:default \
     target:toolchains//...->prelude//platforms:default \
-    target:third-party//...->prelude//platforms:default
+    target:third-party-haskell//...->prelude//platforms:default
 
 [build]
   execution_platforms = root//buck2/platforms:exec

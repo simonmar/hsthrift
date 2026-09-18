@@ -17,10 +17,10 @@ cxx_library(
     public_include_directories = ["."],
     exported_deps = [
         "//folly-clib:folly-clib",
-        "//folly-clib:glog",
-        "//folly-clib:gflags",
-        "//folly-clib:fmt",
-        "//folly-clib:event",
+        "//third-party:glog",
+        "//third-party:gflags",
+        "//third-party:fmt",
+        "//third-party:event",
     ],
     visibility = ["PUBLIC"],
 )

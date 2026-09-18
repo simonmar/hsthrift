@@ -1,35 +1,5 @@
 load("//buck2:cxx.bzl", "cxx_library")
-load("@prelude//third-party:pkgconfig.bzl", "external_pkgconfig_library")
 load("cxx-files.bzl", "cxx_files")
-
-# pkgconfig dependencies match those in folly-clib.cabal
-external_pkgconfig_library(
-    name = "fmt",
-)
-
-external_pkgconfig_library(
-    name = "gflags",
-)
-
-external_pkgconfig_library(
-    name = "glog",
-    package = "libglog",
-    deps = [":gflags"],
-)
-
-external_pkgconfig_library(
-    name = "openssl",
-)
-
-external_pkgconfig_library(
-    name = "unwind",
-    package = "libunwind",
-)
-
-external_pkgconfig_library(
-    name = "event",
-    package = "libevent",
-)
 
 cxx_library(
     name = "folly-clib",
@@ -53,12 +23,16 @@ cxx_library(
         "-lsodium",
         "-latomic",
     ],
+    # pkgconfig dependencies match those in folly-clib.cabal - see
+    # //third-party/BUCK for their actual definitions (this package's
+    # own copy, independent of Glean's separate root third-party/BUCK -
+    # see that file's own comment on why each cell has its own).
     exported_deps = [
-        ":fmt",
-        ":glog",
-        ":openssl",
-        ":unwind",
-        ":event",
+        "//third-party:fmt",
+        "//third-party:glog",
+        "//third-party:openssl",
+        "//third-party:unwind",
+        "//third-party:event",
     ],
     visibility = ["PUBLIC"],
 )

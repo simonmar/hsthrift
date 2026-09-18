@@ -246,7 +246,7 @@ library
     if flag(folly)
         -- the version here is spliced automatically by
         -- 'make setup-folly-version':
-        build-depends: folly-clib
+        build-depends: folly-clib==20260908.1605
     else
         build-depends: folly-clib==0.0
 

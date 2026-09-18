@@ -1,0 +1,45 @@
+load("@prelude//third-party:pkgconfig.bzl", "external_pkgconfig_library")
+
+# hsthrift's own (non-Haskell) pkg-config-discovered system library
+# dependencies, collected in one place rather than scattered across
+# each consuming cxx_library()'s own BUCK file (folly-clib, common/
+# util). This is an ordinary package under the `hsthrift` cell
+# (`hsthrift//third-party:...`, or bare `//third-party:...` from within
+# this cell) - unlike third-party/haskell/, plain `third-party/` is
+# *not* a shared cell name (see Glean's own root third-party/BUCK's own
+# comment), so this file is genuinely independent of - not shadowed by
+# - Glean's own copy, even when hsthrift is built nested inside Glean.
+# `fmt`/`gflags` are declared again here even though Glean's own
+# third-party/BUCK also declares them (needed there for glean/rts,
+# glean/rocksdb, glean/lmdb, glean/lang/clang) - see that file's own
+# comment on why the duplication is intentional and harmless.
+#
+# pkgconfig dependencies match those in folly-clib.cabal.
+
+external_pkgconfig_library(
+    name = "fmt",
+)
+
+external_pkgconfig_library(
+    name = "gflags",
+)
+
+external_pkgconfig_library(
+    name = "glog",
+    package = "libglog",
+    deps = [":gflags"],
+)
+
+external_pkgconfig_library(
+    name = "openssl",
+)
+
+external_pkgconfig_library(
+    name = "unwind",
+    package = "libunwind",
+)
+
+external_pkgconfig_library(
+    name = "event",
+    package = "libevent",
+)
