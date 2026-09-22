@@ -227,6 +227,8 @@ setup-folly::
 			-DCMAKE_DISABLE_FIND_PACKAGE_Snappy=ON \
 			-DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=ON \
 			-DCMAKE_DISABLE_FIND_PACKAGE_LibLZMA=ON \
+			-DCMAKE_DISABLE_FIND_PACKAGE_LibLZMA=ON \
+			-DCMAKE_DISABLE_FIND_PACKAGE_LibDwarf=ON \
 			2>&1 | sed 's/[^m]*m//g' | tee out && \
 		grep '^FILES_CPP:' out | \
 			sed 's/FILES_CPP://' | \
