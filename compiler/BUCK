@@ -1,4 +1,4 @@
-load("//buck2:haskell.bzl", "haskell_binary", "haskell_library", "haskell_test")
+load("//buck2_macros:haskell.bzl", "haskell_binary", "haskell_library", "haskell_test")
 
 haskell_library(
     name = "thrift-compiler-lib",

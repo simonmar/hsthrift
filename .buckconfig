@@ -15,6 +15,8 @@
   # A dummy cell the aliases below point at - just needs to exist and be
   # empty. See the cell_aliases comment for why.
   none = none
+  # exclude this from buck2 build //...
+  example = buck2/example
 
 [cell_aliases]
   config = prelude

@@ -1,4 +1,4 @@
-load("//buck2:haskell.bzl", "haskell_test")
+load("//buck2_macros:haskell.bzl", "haskell_test")
 load("//buck2:thrift.bzl", "thrift_srcs", "thrift_srcs_export")
 # Exported for thrift-lib's own test-lib (its test-suite HsTest.Types is
 # generated from if/hs_test.thrift, which lives here, not under
