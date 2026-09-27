@@ -40,10 +40,7 @@
 # defined libraries/binaries, silently missing every haskell_test(). It's
 # reimplemented here instead, structurally identical to the generic
 # version, but calling *this* file's own haskell_binary() for the `:name-
-# bin` target. `_BUILD_MODE_EXEC_COMPATIBLE_WITH` is similarly duplicated
-# (not imported - it's a module-private name in the generic file) rather
-# than exported from the shared repo just for this: small, self-contained,
-# and keeps this file independent of a cross-project shared-repo change.
+# bin` target.
 
 load("//buck2:haskell.bzl", real_haskell_binary = "haskell_binary", real_haskell_library = "haskell_library")
 
@@ -79,16 +76,6 @@ FB_HASKELL_EXTENSIONS = [
     "-XTypeOperators",
 ]
 
-# Duplicated from //buck2:haskell.bzl (module-private there) purely so
-# haskell_test() below can set the same build-mode-inheriting
-# exec_compatible_with on its own sh_test() wrapper - see that file's own
-# comment on why this has to be set on the *referencing* target (the
-# sh_test(), here) rather than on whatever it exec_dep's/`$(exe ...)`s.
-_BUILD_MODE_EXEC_COMPATIBLE_WITH = select({
-    "root//buck2/constraints:opt": ["root//buck2/constraints:opt"],
-    "DEFAULT": [],
-})
-
 def haskell_library(name, compiler_flags = [], fb_haskell = True, **kwargs):
     all_compiler_flags = (FB_HASKELL_EXTENSIONS + compiler_flags) if fb_haskell else compiler_flags
     real_haskell_library(
@@ -120,13 +107,21 @@ def haskell_binary(name, compiler_flags = [], fb_haskell = True, linker_flags = 
 #
 # `test_args`/`test_env` cover the one real wrinkle: a test-suite that
 # shells out to another buck2-built tool (e.g. glean-clang's clang-index)
-# needs that tool's location passed in explicitly via a `$(exe ...)`
-# string-parameter macro, rather than relying on it being on `$PATH` -
-# more hermetic than this migration's own earlier practice of manually
-# prepending PATH by hand to reproduce these runs (see buck2.md). `cwd`
-# covers the other one - some tests need to run with a specific working
-# directory - via `//buck2:run_in_cwd`, a tiny cd-then-exec wrapper script
-# in the now-generic shared repo (unrelated to fb_haskell, so left there).
+# needs that tool's location passed in explicitly via a `$(exe_target
+# ...)` string-parameter macro, rather than relying on it being on
+# `$PATH` - more hermetic than this migration's own earlier practice of
+# manually prepending PATH by hand to reproduce these runs (see
+# buck2.md). `$(exe_target ...)`, not `$(exe ...)`: resolves the
+# referenced target under *this* target's own ordinary configuration
+# instead of switching to an execution platform, so a test-time tool
+# like this automatically gets the same dev/opt build mode as the test
+# itself with nothing further needed here (see buck2.md's "$(exe_target
+# ...)" entry - this used to need an exec_compatible_with default on
+# this function's own sh_test() to line the two configurations back up,
+# now removed as dead weight). `cwd` covers the other wrinkle - some
+# tests need to run with a specific working directory - via `//buck2:
+# run_in_cwd`, a tiny cd-then-exec wrapper script in the now-generic
+# shared repo (unrelated to fb_haskell, so left there).
 #
 # `LANG` defaults to a UTF-8 locale: unlike `buck2 run` (which inherits
 # the caller's shell environment, `LANG` included), `buck2 test` runs
@@ -146,21 +141,11 @@ def haskell_test(name, test_args = [], test_env = {}, cwd = None, **kwargs):
 
     if cwd != None:
         test_target = "//buck2:run_in_cwd"
-        args = [cwd, "$(exe :" + bin + ")"] + test_args
+        args = [cwd, "$(exe_target :" + bin + ")"] + test_args
 
     native.sh_test(
         name = name,
         test = test_target,
         args = args,
         env = {"LANG": "C.UTF-8"} | test_env,
-        # `args`'s own `$(exe ...)` macros (the cd-wrapper case just
-        # above, or test_args' own e.g. clang-index, hie-indexer - see
-        # buck2/platforms/BUCK) are resolved for *this* target, not the
-        # `:bin` haskell_binary() above - it's this sh_test() whose own
-        # exec_compatible_with governs which execution platform those
-        # tools get built under, so the same build-mode-inheriting
-        # default needs to be set here too, not just on haskell_binary()
-        # (which already gets it via its own kwargs.setdefault, but
-        # that's a separate target from this one).
-        exec_compatible_with = _BUILD_MODE_EXEC_COMPATIBLE_WITH,
     )
