@@ -70,8 +70,8 @@ haskell_library(
 haskell_library(
     name = "test-helpers",
     srcs = {
-        "Network.hs": "test/helpers/Network.hs",
-        "TestChannel.hs": "test/helpers/TestChannel.hs",
+        "Network": "test/helpers/Network.hs",
+        "TestChannel": "test/helpers/TestChannel.hs",
     },
     deps = [":thrift-lib"],
     packages = ["bytestring", "network"],
@@ -145,7 +145,7 @@ haskell_library(
             "//thrift/annotation:thrift-annotation-thrift",
             "//tests:hs_test_instances.hs"
         ],
-        srcs = {"TestCommon.hs": "test/lib/TestCommon.hs"},
+        srcs = {"TestCommon": "test/lib/TestCommon.hs"},
     ),
     deps = _TEST_DEPS + [
         "//thrift/annotation:thrift-annotation",
@@ -158,7 +158,7 @@ _TEST_COMMON_DEPS = _TEST_DEPS + [":test-lib"]
 
 haskell_test(
     name = "channel",
-    srcs = {"ChannelTest.hs": "test/ChannelTest.hs"},
+    srcs = {"ChannelTest": "test/ChannelTest.hs"},
     main = "ChannelTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
@@ -166,7 +166,7 @@ haskell_test(
 
 haskell_test(
     name = "socket-channel",
-    srcs = {"SocketChannelTest.hs": "test/SocketChannelTest.hs"},
+    srcs = {"SocketChannelTest": "test/SocketChannelTest.hs"},
     main = "SocketChannelTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
@@ -174,7 +174,7 @@ haskell_test(
 
 haskell_test(
     name = "client",
-    srcs = {"ClientTest.hs": "test/ClientTest.hs"},
+    srcs = {"ClientTest": "test/ClientTest.hs"},
     main = "ClientTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
@@ -182,7 +182,7 @@ haskell_test(
 
 haskell_test(
     name = "binary-parser",
-    srcs = {"BinaryParserTest.hs": "test/BinaryParserTest.hs"},
+    srcs = {"BinaryParserTest": "test/BinaryParserTest.hs"},
     main = "BinaryParserTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
@@ -190,7 +190,7 @@ haskell_test(
 
 haskell_test(
     name = "json-parsing",
-    srcs = {"JSONStringTest.hs": "test/JSONStringTest.hs"},
+    srcs = {"JSONStringTest": "test/JSONStringTest.hs"},
     main = "JSONStringTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
@@ -198,7 +198,7 @@ haskell_test(
 
 haskell_test(
     name = "json-num",
-    srcs = {"JSONNumTest.hs": "test/JSONNumTest.hs"},
+    srcs = {"JSONNumTest": "test/JSONNumTest.hs"},
     main = "JSONNumTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
@@ -206,7 +206,7 @@ haskell_test(
 
 haskell_test(
     name = "json-null",
-    srcs = {"JSONNullTest.hs": "test/JSONNullTest.hs"},
+    srcs = {"JSONNullTest": "test/JSONNullTest.hs"},
     main = "JSONNullTest",
     deps = _TEST_COMMON_DEPS,
     packages = _TEST_PACKAGES,
